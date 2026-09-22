@@ -2683,6 +2683,8 @@ Duplicates block Start by default.
 
 ## BUILD STEP 3 — Seed / Commitment System
 
+**Status:** ✅ Completed on 2026-09-22
+
 ### Concept
 
 Lock the giveaway before gameplay.
@@ -2709,6 +2711,8 @@ Expected timeline hashes must match exactly.
 ---
 
 ## BUILD STEP 4 — Core Game Engine
+
+**Status:** ✅ Completed on 2026-09-22
 
 ### Concept
 
@@ -2743,6 +2747,8 @@ For 1,000 generated games using 30–60 entries:
 ---
 
 ## BUILD STEP 5 — Timeline Generator
+
+**Status:** ✅ Completed on 2026-09-22
 
 ### Concept
 

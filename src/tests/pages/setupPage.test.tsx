@@ -74,4 +74,20 @@ describe('setup page', () => {
     expect(screen.getByRole('checkbox', { name: /^auto advance/i })).toBeChecked();
     expect(screen.getByRole('checkbox', { name: /^survivor board/i })).not.toBeChecked();
   });
+
+  it('locks and precomputes the complete game before opening the game screen', async () => {
+    const user = userEvent.setup();
+    renderSetup();
+
+    await user.type(screen.getByLabelText(/giveaway name/i), 'Locked UI test');
+    fireEvent.change(screen.getByLabelText(/^entries$/i), {
+      target: { value: eightEntries.join('\n') },
+    });
+    await user.click(screen.getByRole('button', { name: /start giveaway/i }));
+
+    expect(await screen.findByRole('heading', { name: /game locked/i })).toBeInTheDocument();
+    expect(screen.getByText(/sha-256 commitment/i)).toBeInTheDocument();
+    expect(screen.getByText(/outcome precomputed/i)).toBeInTheDocument();
+    expect(screen.getByText(/timeline playback arrives in phase 06/i)).toBeInTheDocument();
+  });
 });

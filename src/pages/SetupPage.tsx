@@ -1,5 +1,5 @@
 import { useMemo, type FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAppState } from '../app/useAppState';
 import { AppChrome } from '../components/AppChrome/AppChrome';
 import { GameStage } from '../components/GameStage/GameStage';
@@ -31,7 +31,16 @@ function getCountTone(count: number) {
 }
 
 export function SetupPage() {
-  const { setupDraft, updateSetupConfig, updateSetupDraft } = useAppState();
+  const navigate = useNavigate();
+  const {
+    gameSession,
+    lockError,
+    lockStatus,
+    setupDraft,
+    startGame,
+    updateSetupConfig,
+    updateSetupDraft,
+  } = useAppState();
   const validation = useMemo(
     () =>
       validateSetup(
@@ -42,9 +51,15 @@ export function SetupPage() {
     [setupDraft.config.allowDuplicateEntries, setupDraft.giveawayName, setupDraft.rawEntries],
   );
   const countTone = getCountTone(validation.roster.length);
+  const controlsDisabled = Boolean(gameSession) || lockStatus === 'locking';
+
+  const lockAndNavigate = async () => {
+    if (await startGame()) await navigate('/game');
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    void lockAndNavigate();
   };
 
   const updateBooleanConfig = (key: BooleanSetupConfigKey, checked: boolean) => {
@@ -93,6 +108,7 @@ export function SetupPage() {
                 value={setupDraft.giveawayName}
                 placeholder="September Capsule Chaos"
                 autoComplete="off"
+                disabled={controlsDisabled}
                 onChange={(event) => updateSetupDraft({ giveawayName: event.target.value })}
               />
 
@@ -108,6 +124,7 @@ export function SetupPage() {
                 value={setupDraft.rawEntries}
                 placeholder={'DemonBlade\nLightBringer\nNightFox\nHaru'}
                 spellCheck={false}
+                disabled={controlsDisabled}
                 onChange={(event) => updateSetupDraft({ rawEntries: event.target.value })}
               />
 
@@ -115,6 +132,7 @@ export function SetupPage() {
                 <input
                   type="checkbox"
                   checked={setupDraft.config.allowDuplicateEntries}
+                  disabled={controlsDisabled}
                   onChange={(event) =>
                     updateBooleanConfig('allowDuplicateEntries', event.target.checked)
                   }
@@ -159,6 +177,7 @@ export function SetupPage() {
                         name="animation-speed"
                         value={option.value}
                         checked={setupDraft.config.animationSpeed === option.value}
+                        disabled={controlsDisabled}
                         onChange={() => updateSetupConfig({ animationSpeed: option.value })}
                       />
                       <span>{option.label}</span>
@@ -177,6 +196,7 @@ export function SetupPage() {
                         name="fakeout-intensity"
                         value={option.value}
                         checked={setupDraft.config.fakeoutIntensity === option.value}
+                        disabled={controlsDisabled}
                         onChange={() => updateSetupConfig({ fakeoutIntensity: option.value })}
                       />
                       <span>{option.label}</span>
@@ -190,6 +210,7 @@ export function SetupPage() {
                   <input
                     type="checkbox"
                     checked={setupDraft.config.soundEnabled}
+                    disabled={controlsDisabled}
                     onChange={(event) => updateBooleanConfig('soundEnabled', event.target.checked)}
                   />
                   <span>
@@ -201,6 +222,7 @@ export function SetupPage() {
                   <input
                     type="checkbox"
                     checked={setupDraft.config.autoAdvancePhases}
+                    disabled={controlsDisabled}
                     onChange={(event) =>
                       updateBooleanConfig('autoAdvancePhases', event.target.checked)
                     }
@@ -214,6 +236,7 @@ export function SetupPage() {
                   <input
                     type="checkbox"
                     checked={setupDraft.config.showFullSurvivorBoard}
+                    disabled={controlsDisabled}
                     onChange={(event) =>
                       updateBooleanConfig('showFullSurvivorBoard', event.target.checked)
                     }
@@ -226,7 +249,9 @@ export function SetupPage() {
               </div>
 
               <div className={styles.validationSummary} aria-live="polite">
-                {validation.errors.length === 0 && validation.warnings.length === 0 ? (
+                {lockError ? (
+                  <p className={styles.errorMessage}>{lockError}</p>
+                ) : validation.errors.length === 0 && validation.warnings.length === 0 ? (
                   <p className={styles.successMessage}>Roster is in the recommended range.</p>
                 ) : (
                   <ul>
@@ -250,17 +275,17 @@ export function SetupPage() {
                 <button
                   className="button buttonPrimary"
                   type="submit"
-                  disabled={!validation.canStart}
+                  disabled={!validation.canStart || controlsDisabled}
                   aria-describedby="start-help"
                 >
-                  Start giveaway
+                  {lockStatus === 'locking' ? 'Locking game…' : 'Start giveaway'}
                 </button>
                 <Link className="button buttonSecondary" to="/game">
                   Preview stage
                 </Link>
               </div>
               <p className={styles.startHelp} id="start-help">
-                Seed locking and game start are added in Phase 03.
+                Start securely locks this roster and precomputes the complete baseline outcome.
               </p>
             </section>
           </div>

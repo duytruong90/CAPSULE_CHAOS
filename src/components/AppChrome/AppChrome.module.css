@@ -92,3 +92,8 @@
 .nav a:hover {
   color: #fff;
 }
+
+.soundButton:disabled {
+  color: #625a6d;
+  cursor: not-allowed;
+}

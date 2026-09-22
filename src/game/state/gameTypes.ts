@@ -1,7 +1,8 @@
 import type { GameConfig } from './gameConfig';
 import type { PlayerEntry } from './setupTypes';
+import type { CardRarity } from '../cards/cardTypes';
 
-export const ENGINE_RULES_VERSION = 'capsule-chaos-engine-v1' as const;
+export const ENGINE_RULES_VERSION = 'capsule-chaos-engine-v2-purge' as const;
 
 export type PlayerState = 'active' | 'safe' | 'eliminated' | 'revived' | 'finalist' | 'winner';
 
@@ -50,7 +51,15 @@ export type ProtectionKind = 'shield' | 'second-life';
 
 export interface EngineEventPayloadByType {
   'phase-started': { activeCount: number; targetCount: number };
-  'player-drawn': { drawRule: DrawRule; activeCount: number };
+  'player-drawn': { drawRule: DrawRule; activeCount: number; marked: boolean };
+  'card-resolved': {
+    cardId: string;
+    name: string;
+    rarity: CardRarity;
+    description: string;
+    presentationKey: string;
+    resultText: string;
+  };
   'player-eliminated': { activeCount: number; eliminationCount: number };
   'player-safe': { activeCount: number };
   'protection-consumed': { protection: ProtectionKind; remainingCharges: number };

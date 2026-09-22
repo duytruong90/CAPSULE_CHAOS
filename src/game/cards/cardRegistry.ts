@@ -1,9 +1,9 @@
 import type { CardEffectContext, CardEffectDefinition, CardEffectResolution } from './cardTypes';
 
-export class CardEffectRegistry {
-  private readonly definitions = new Map<string, CardEffectDefinition>();
+export class CardEffectRegistry<Payload = unknown> {
+  private readonly definitions = new Map<string, CardEffectDefinition<Payload>>();
 
-  register(definition: CardEffectDefinition) {
+  register(definition: CardEffectDefinition<Payload>) {
     if (this.definitions.has(definition.id)) {
       throw new Error(`Card effect ${definition.id} is already registered.`);
     }
@@ -21,7 +21,7 @@ export class CardEffectRegistry {
     );
   }
 
-  resolve(cardId: string, context: CardEffectContext): CardEffectResolution {
+  resolve(cardId: string, context: CardEffectContext): CardEffectResolution<Payload> {
     const visited = new Set<string>();
     let currentCardId = cardId;
 

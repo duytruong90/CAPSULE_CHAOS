@@ -19,7 +19,7 @@ export function AppChrome() {
 
       <div className={styles.status}>
         <span className={styles.statusDot} aria-hidden="true" />
-        Foundation build
+        Purge live build
       </div>
 
       <nav className={styles.nav} aria-label="Primary navigation">

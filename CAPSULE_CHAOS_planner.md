@@ -2601,7 +2601,7 @@ Do not add this complexity to V1 unless specifically requested.
 
 ## BUILD STEP 1 — Project Skeleton
 
-**Status:** ✅ Completed on 2026-09-22
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2636,7 +2636,7 @@ No gameplay yet.
 
 ## BUILD STEP 2 — Entry Import / Validation
 
-**Status:** ✅ Completed on 2026-09-22
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2683,7 +2683,7 @@ Duplicates block Start by default.
 
 ## BUILD STEP 3 — Seed / Commitment System
 
-**Status:** ✅ Completed on 2026-09-22
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2712,7 +2712,7 @@ Expected timeline hashes must match exactly.
 
 ## BUILD STEP 4 — Core Game Engine
 
-**Status:** ✅ Completed on 2026-09-22
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2748,7 +2748,7 @@ For 1,000 generated games using 30–60 entries:
 
 ## BUILD STEP 5 — Timeline Generator
 
-**Status:** ✅ Completed on 2026-09-22
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2773,6 +2773,8 @@ All random calls happen before timeline playback.
 ---
 
 ## BUILD STEP 6 — Base Gachapon Animation
+
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2804,6 +2806,8 @@ Animation resolves correctly under:
 
 ## BUILD STEP 7 — Phase 1
 
+**Status:** ✅ COMPLETED
+
 ### Concept
 
 Implement full Purge gameplay.
@@ -2828,6 +2832,8 @@ No host input required during the phase.
 ---
 
 ## BUILD STEP 8 — Card Presentation System
+
+**Status:** ✅ COMPLETED
 
 ### Concept
 

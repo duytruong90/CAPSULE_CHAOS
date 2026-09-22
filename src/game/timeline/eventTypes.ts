@@ -1,13 +1,14 @@
 import type { DrawRule, GamePhase, ProtectionKind } from '../state/gameTypes';
+import type { EngineEventPayloadByType } from '../state/gameTypes';
 
-export const TIMELINE_SCHEMA_VERSION = 'capsule-chaos-timeline-v1' as const;
+export const TIMELINE_SCHEMA_VERSION = 'capsule-chaos-timeline-v2' as const;
 
 export interface TimelinePayloadByType {
-  'capsule-spin': { sourceEngineEventId: string; drawRule: DrawRule };
-  'player-reveal': { sourceEngineEventId: string; drawRule: DrawRule };
+  'capsule-spin': { sourceEngineEventId: string; drawRule: DrawRule; marked: boolean };
+  'player-reveal': { sourceEngineEventId: string; drawRule: DrawRule; marked: boolean };
   elimination: { sourceEngineEventId: string; activeCount: number; eliminationCount: number };
   safe: { sourceEngineEventId: string; activeCount: number };
-  'card-reveal': { sourceEngineEventId: string; cardId: string; rarity: string };
+  'card-reveal': { sourceEngineEventId: string } & EngineEventPayloadByType['card-resolved'];
   protection: {
     sourceEngineEventId: string;
     protection: ProtectionKind;

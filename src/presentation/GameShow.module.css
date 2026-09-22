@@ -1,0 +1,123 @@
+.show {
+  padding: 24px 76px 30px;
+}
+.hud {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 96px;
+}
+.title {
+  display: block;
+  max-width: 1100px;
+  color: #a997bd;
+  font-size: 20px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.hud h2 {
+  margin: 8px 0 0;
+  font-size: 26px;
+  letter-spacing: 0.09em;
+}
+.counter {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.counter strong {
+  color: #acffdf;
+  font-size: 66px;
+  line-height: 1;
+}
+.counter span {
+  color: #afcfc4;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+.arena {
+  display: grid;
+  grid-template-columns: 560px minmax(0, 1fr);
+  align-items: center;
+  gap: 50px;
+  height: 700px;
+}
+.machine {
+  display: grid;
+  place-items: center;
+  padding-top: 30px;
+}
+.presentation {
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+.presentation *,
+.machine * {
+  animation-delay: calc(-1 * var(--elapsed));
+}
+.presentation [data-settled='true'],
+.presentation [data-settled='true'] * {
+  animation-delay: calc(-1 * var(--duration));
+}
+.intro {
+  max-width: 950px;
+  text-align: center;
+}
+.intro > p {
+  color: #b8a4ca;
+  font-size: 26px;
+  line-height: 1.5;
+}
+.intro h1 {
+  font-size: 76px;
+  line-height: 1.05;
+  margin: 25px 0;
+}
+.intro strong {
+  color: #d5b9ff;
+  font-size: 30px;
+}
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid #d0acff26;
+  padding-top: 22px;
+}
+.commitment {
+  display: grid;
+  gap: 8px;
+}
+.commitment b {
+  color: #94cbb9;
+  font-size: 15px;
+  letter-spacing: 0.11em;
+}
+.commitment span {
+  font-family: monospace;
+  color: #d8c5ef;
+  font-size: 23px;
+  letter-spacing: 0.12em;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.controls > span {
+  color: #e6c7ff;
+  font-size: 18px;
+}
+.controls button {
+  cursor: pointer;
+  font-size: 18px;
+}
+.controls button:disabled {
+  opacity: 0.3;
+  cursor: default;
+  filter: none;
+}

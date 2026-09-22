@@ -87,7 +87,7 @@ describe('setup page', () => {
 
     expect(await screen.findByRole('heading', { name: /game locked/i })).toBeInTheDocument();
     expect(screen.getByText(/sha-256 commitment/i)).toBeInTheDocument();
-    expect(screen.getByText(/outcome precomputed/i)).toBeInTheDocument();
-    expect(screen.getByText(/timeline playback arrives in phase 06/i)).toBeInTheDocument();
+    expect(screen.getByText(/the purge begins automatically/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /pause/i })).toBeEnabled();
   });
 });

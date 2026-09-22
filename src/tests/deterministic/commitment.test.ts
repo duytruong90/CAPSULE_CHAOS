@@ -22,7 +22,8 @@ describe('canonical game lock commitment', () => {
     const commitment = await createCommitment(createGameLockPayload(roster, config, seed));
 
     expect(commitment.fullHash).toBe(
-      'c1b474f75200733f3915f10af6904016c72a31e3787df9ea91a37ca735d8cc8b',
+      // v2 commits to the engine rules version; independently checked with node:crypto.
+      '398864d59d4c7e4da4cbe18ba6f30343f42d5e7c1da5b382733efa3adf8d88cf',
     );
     expect(commitment.displayHash).toMatch(/^[0-9A-F]{4}(?:-[0-9A-F]{4}){3}$/u);
   });

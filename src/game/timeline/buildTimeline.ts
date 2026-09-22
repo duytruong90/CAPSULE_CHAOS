@@ -110,15 +110,32 @@ export function buildTimeline(
           event,
           'capsule-spin',
           event.participants,
-          { sourceEngineEventId: event.id, drawRule: event.payload.drawRule },
+          {
+            sourceEngineEventId: event.id,
+            drawRule: event.payload.drawRule,
+            marked: event.payload.marked,
+          },
           'capsule.spin',
         );
         append(
           event,
           'player-reveal',
           event.participants,
-          { sourceEngineEventId: event.id, drawRule: event.payload.drawRule },
+          {
+            sourceEngineEventId: event.id,
+            drawRule: event.payload.drawRule,
+            marked: event.payload.marked,
+          },
           'capsule.player-reveal',
+        );
+        break;
+      case 'card-resolved':
+        append(
+          event,
+          'card-reveal',
+          event.participants,
+          { sourceEngineEventId: event.id, ...event.payload },
+          event.payload.presentationKey,
         );
         break;
       case 'player-eliminated':

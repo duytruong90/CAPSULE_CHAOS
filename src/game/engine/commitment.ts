@@ -1,9 +1,10 @@
 import type { PlayerEntry } from '../state/setupTypes';
 import type { GameConfig } from '../state/gameConfig';
 import { PRNG_ALGORITHM } from './rng';
+import { ENGINE_RULES_VERSION } from '../state/gameTypes';
 import { generateSecureSeed, normalizeSeed, type RandomValuesSource } from './seed';
 
-export const LOCK_SCHEMA_VERSION = 'capsule-chaos-lock-v1' as const;
+export const LOCK_SCHEMA_VERSION = 'capsule-chaos-lock-v2' as const;
 
 export interface LockedEntry {
   id: string;
@@ -15,6 +16,7 @@ export interface LockedEntry {
 export interface GameLockPayload {
   readonly schemaVersion: typeof LOCK_SCHEMA_VERSION;
   readonly rngAlgorithm: typeof PRNG_ALGORITHM;
+  readonly engineRulesVersion: typeof ENGINE_RULES_VERSION;
   readonly entries: readonly Readonly<LockedEntry>[];
   readonly config: Readonly<GameConfig>;
   readonly seed: string;
@@ -100,6 +102,7 @@ export function createGameLockPayload(
   return Object.freeze({
     schemaVersion: LOCK_SCHEMA_VERSION,
     rngAlgorithm: PRNG_ALGORITHM,
+    engineRulesVersion: ENGINE_RULES_VERSION,
     entries: Object.freeze(entries.map((entry) => Object.freeze(entry))),
     config: Object.freeze({ ...config }),
     seed: normalizeSeed(seed),

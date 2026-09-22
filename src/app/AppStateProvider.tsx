@@ -4,6 +4,7 @@ import { createLockedGameSession, type LockedGameSession } from '../game/state/g
 import { DEFAULT_SETUP_DRAFT } from '../game/state/setupTypes';
 import type { SetupConfig, SetupDraft } from '../game/state/setupTypes';
 import { AppStateContext, type LockStatus } from './appStateContext';
+import { PlaybackController } from '../presentation/playbackController';
 
 export function AppStateProvider({ children }: { children: ReactNode }) {
   const [setupDraft, setSetupDraft] = useState<SetupDraft>(DEFAULT_SETUP_DRAFT);
@@ -11,6 +12,17 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [lockStatus, setLockStatus] = useState<LockStatus>('idle');
   const [lockError, setLockError] = useState<string | null>(null);
   const lockAttempted = useRef(false);
+  const playback = useMemo(
+    () =>
+      gameSession
+        ? new PlaybackController(
+            gameSession.timeline,
+            gameSession.lock.payload.config,
+            gameSession.publicLock.entryCount,
+          )
+        : null,
+    [gameSession],
+  );
 
   const updateSetupDraft = useCallback(
     (updates: Partial<Pick<SetupDraft, 'giveawayName' | 'rawEntries'>>) => {
@@ -62,6 +74,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       updateSetupDraft,
       updateSetupConfig,
       gameSession,
+      playback,
       lockStatus,
       lockError,
       startGame,
@@ -71,6 +84,7 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
       updateSetupDraft,
       updateSetupConfig,
       gameSession,
+      playback,
       lockStatus,
       lockError,
       startGame,

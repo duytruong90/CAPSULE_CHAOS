@@ -3,6 +3,7 @@ import { SeededRng } from './rng';
 import { calculatePhaseTargets } from './phaseRules';
 import { isPlayerInPlay, selectInPlayPlayers, selectRandomInPlayPlayer } from './selectors';
 import { appendPlayerHistory, createInitialPlayer, reducePlayer } from '../state/gameReducer';
+import { PHASE_ONE_CARDS, phaseOneCardRegistry } from '../cards/phaseOneCards';
 import {
   ENGINE_RULES_VERSION,
   type DrawRule,
@@ -35,6 +36,9 @@ export function simulateGame(input: SimulationInput): SimulationResult {
     input.roster.map((entry) => [entry.id, createInitialPlayer(entry)] as const),
   );
   const events: EngineEvent[] = [];
+  let nextDrawMarked = false;
+  let completedEliminations = 0;
+  let nextChaosAt = 5;
 
   if (playersById.size !== input.roster.length) {
     throw new Error('Roster contains duplicate player IDs.');
@@ -85,11 +89,17 @@ export function simulateGame(input: SimulationInput): SimulationResult {
     );
   };
 
-  const drawPlayer = (phase: GamePhase, drawRule: DrawRule, candidates?: readonly Player[]) => {
+  const drawPlayer = (
+    phase: GamePhase,
+    drawRule: DrawRule,
+    candidates?: readonly Player[],
+    marked = false,
+  ) => {
     const selected = candidates ? rng.choose(candidates) : selectRandomInPlayPlayer(players(), rng);
     const event = emit(phase, 'player-drawn', [selected.id], {
       drawRule,
       activeCount: inPlayPlayers().length,
+      marked,
     });
     recordHistory(selected.id, event, 'drawn');
     return getPlayer(selected.id);
@@ -118,6 +128,7 @@ export function simulateGame(input: SimulationInput): SimulationResult {
       eliminationCount: transition.player.eliminationCount,
     });
     recordHistory(playerId, event, 'eliminated');
+    completedEliminations += 1;
   };
 
   const completePhase = (phase: GamePhase, targetCount: number) => {
@@ -135,8 +146,82 @@ export function simulateGame(input: SimulationInput): SimulationResult {
     });
 
     while (inPlayPlayers().length > targetCount) {
-      const selected = drawPlayer(phase, 'eliminate');
-      eliminatePlayer(phase, selected.id);
+      const marked = nextDrawMarked;
+      nextDrawMarked = false;
+      const selected = drawPlayer(phase, 'eliminate', undefined, marked);
+      if (phase !== 'phase-1' || marked || completedEliminations < nextChaosAt) {
+        eliminatePlayer(phase, selected.id);
+        continue;
+      }
+      // A rescue cannot trigger another card without five more real eliminations.
+      nextChaosAt = completedEliminations + 5;
+      const context = {
+        actorId: selected.id,
+        rng,
+        targetCount,
+        state: {
+          phase,
+          status: 'running' as const,
+          players: players(),
+          eventCount: events.length,
+          config,
+        },
+      };
+      const eligible = PHASE_ONE_CARDS.filter((card) =>
+        phaseOneCardRegistry.get(card.id)?.isEligible(context),
+      );
+      const card = rng.weightedChoice(eligible.map((value) => ({ value, weight: value.weight })));
+      const resolution = phaseOneCardRegistry.resolve(card.id, context);
+      emit(phase, 'card-resolved', resolution.participants, {
+        cardId: card.id,
+        name: card.name,
+        rarity: card.rarity,
+        description: card.description,
+        presentationKey: card.presentationKey,
+        resultText: resolution.payload.resultText,
+      });
+      for (const action of resolution.payload.actions) {
+        switch (action.type) {
+          case 'mark-next':
+            nextDrawMarked = true;
+            break;
+          case 'grant':
+            setPlayer(
+              reducePlayer(getPlayer(action.playerId), {
+                type: 'grant-protection',
+                protection: action.protection,
+              }).player,
+            );
+            break;
+          case 'draw':
+            drawPlayer(phase, 'eliminate', [getPlayer(action.playerId)]);
+            break;
+          case 'eliminate':
+            eliminatePlayer(phase, action.playerId);
+            break;
+          case 'safe': {
+            setPlayer(reducePlayer(getPlayer(action.playerId), { type: 'mark-safe' }).player);
+            const event = emit(phase, 'player-safe', [action.playerId], {
+              activeCount: inPlayPlayers().length,
+            });
+            recordHistory(action.playerId, event, 'safe');
+            break;
+          }
+          case 'revive': {
+            const revived = reducePlayer(getPlayer(action.playerId), {
+              type: 'revive',
+              maxRevivals: config.maxPlayerRevivals,
+            }).player;
+            setPlayer(revived);
+            const event = emit(phase, 'player-revived', [action.playerId], {
+              activeCount: inPlayPlayers().length,
+              revivalCount: revived.revivalCount,
+            });
+            recordHistory(action.playerId, event, 'revived');
+            break;
+          }
+        }
+      }
     }
 
     const completion = completePhase(phase, targetCount);

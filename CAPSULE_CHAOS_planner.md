@@ -2636,6 +2636,8 @@ No gameplay yet.
 
 ## BUILD STEP 2 — Entry Import / Validation
 
+**Status:** ✅ Completed on 2026-09-22
+
 ### Concept
 
 Allow the host to paste player names.

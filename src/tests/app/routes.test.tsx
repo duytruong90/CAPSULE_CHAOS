@@ -13,7 +13,7 @@ describe('application routes', () => {
     renderRoute('/setup');
 
     expect(screen.getByRole('main', { name: /setup screen/i })).toBeInTheDocument();
-    expect(screen.getByRole('heading', { name: /load the names/i })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: /build the roster/i })).toBeInTheDocument();
   });
 
   it('renders the game screen at /game', () => {

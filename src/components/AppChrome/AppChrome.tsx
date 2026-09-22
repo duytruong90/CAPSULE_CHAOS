@@ -4,7 +4,8 @@ import styles from './AppChrome.module.css';
 
 export function AppChrome() {
   const { pathname } = useLocation();
-  const { soundEnabled, setSoundEnabled } = useAppState();
+  const { setupDraft, updateSetupConfig } = useAppState();
+  const { soundEnabled } = setupDraft.config;
 
   return (
     <header className={styles.header}>
@@ -32,7 +33,7 @@ export function AppChrome() {
           type="button"
           className={styles.soundButton}
           aria-pressed={!soundEnabled}
-          onClick={() => setSoundEnabled(!soundEnabled)}
+          onClick={() => updateSetupConfig({ soundEnabled: !soundEnabled })}
         >
           Sound {soundEnabled ? 'on' : 'off'}
         </button>

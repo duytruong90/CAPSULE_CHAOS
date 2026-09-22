@@ -1,0 +1,125 @@
+.page {
+  position: relative;
+  min-height: 100%;
+  background:
+    radial-gradient(circle at 50% 56%, rgba(139, 79, 222, 0.27), transparent 25%),
+    linear-gradient(120deg, transparent 35%, rgba(237, 65, 176, 0.07) 50%, transparent 65%), #07050d;
+}
+
+.page::before,
+.page::after {
+  position: absolute;
+  top: 116px;
+  bottom: 0;
+  width: 1px;
+  background: linear-gradient(transparent, rgba(216, 184, 255, 0.16), transparent);
+  content: '';
+}
+
+.page::before {
+  left: 180px;
+}
+
+.page::after {
+  right: 180px;
+}
+
+.hud {
+  display: flex;
+  justify-content: space-between;
+  padding: 36px 76px 0;
+  color: #746b82;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.arena {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 770px;
+  text-align: center;
+}
+
+.ring {
+  position: relative;
+  display: grid;
+  width: 320px;
+  height: 320px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(213, 175, 255, 0.22);
+  border-radius: 50%;
+  place-items: center;
+  box-shadow:
+    inset 0 0 80px rgba(133, 76, 215, 0.12),
+    0 0 70px rgba(133, 76, 215, 0.1);
+}
+
+.ring::before,
+.ring::after {
+  position: absolute;
+  border: 1px solid rgba(213, 175, 255, 0.1);
+  border-radius: inherit;
+  content: '';
+}
+
+.ring::before {
+  inset: 30px;
+}
+
+.ring::after {
+  inset: -35px;
+}
+
+.capsule {
+  width: 160px;
+  height: 160px;
+  border: 7px solid rgba(255, 255, 255, 0.88);
+  border-radius: 50%;
+  background: linear-gradient(180deg, #ee3faa 0 45%, #fff 46% 53%, #6841c9 54% 100%);
+  box-shadow:
+    inset 22px 0 30px rgba(255, 255, 255, 0.14),
+    0 0 55px rgba(236, 65, 176, 0.35);
+  transform: rotate(-18deg);
+}
+
+.arena h1 {
+  margin: 17px 0 12px;
+  font-size: 82px;
+  line-height: 1;
+  letter-spacing: 0.14em;
+  text-shadow: 0 0 38px rgba(216, 184, 255, 0.22);
+}
+
+.arena > p:not(:first-of-type) {
+  max-width: 720px;
+  margin: 0 0 32px;
+  color: #968ca3;
+  font-size: 19px;
+  line-height: 1.55;
+}
+
+.footer {
+  position: absolute;
+  right: 0;
+  bottom: 40px;
+  left: 0;
+  display: flex;
+  gap: 19px;
+  align-items: center;
+  justify-content: center;
+  color: #625b6c;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.footer i {
+  width: 55px;
+  height: 1px;
+  background: rgba(216, 184, 255, 0.2);
+}

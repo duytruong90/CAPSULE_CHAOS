@@ -1,0 +1,7 @@
+dist/
+coverage/
+node_modules/
+.pnpm-store/
+pnpm-lock.yaml
+CAPSULE_CHAOS_Codex_Phased_Prompts.md
+CAPSULE_CHAOS_planner.md

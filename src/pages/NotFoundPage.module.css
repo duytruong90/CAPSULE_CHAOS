@@ -1,0 +1,22 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100%;
+  background: radial-gradient(circle at center, rgba(134, 75, 213, 0.22), transparent 35%), #080611;
+  text-align: center;
+}
+
+.page h1 {
+  margin: 12px 0;
+  color: #d5a7ff;
+  font-size: 190px;
+  line-height: 0.9;
+}
+
+.page > p:not(:first-child) {
+  margin: 0 0 32px;
+  color: #9b92a7;
+  font-size: 21px;
+}

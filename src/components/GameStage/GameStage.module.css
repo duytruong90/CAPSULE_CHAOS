@@ -1,0 +1,25 @@
+.viewport {
+  display: grid;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  place-items: center;
+  background: radial-gradient(circle at 50% 50%, rgba(85, 42, 127, 0.18), transparent 42%), #030207;
+}
+
+.frame {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+  box-shadow: 0 0 80px rgba(0, 0, 0, 0.85);
+}
+
+.canvas {
+  position: absolute;
+  inset: 0 auto auto 0;
+  overflow: hidden;
+  transform-origin: top left;
+  background: #080611;
+  color: #f9f6ff;
+}

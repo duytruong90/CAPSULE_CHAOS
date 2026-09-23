@@ -1,6 +1,6 @@
 export type AssetKind = 'image' | 'video' | 'audio';
 export type AssetCategory =
-  'background' | 'machine' | 'capsules' | 'cards' | 'effects' | 'icons' | 'audio';
+  'background' | 'machine' | 'capsules' | 'cards' | 'effects' | 'icons' | 'audio' | 'breakout';
 export type AssetId =
   | 'bg_arena_main'
   | 'bg_arena_final'
@@ -74,7 +74,19 @@ export type AssetId =
   | 'sfx_epic_charge'
   | 'sfx_epic_impact'
   | 'sfx_legendary_charge'
-  | 'sfx_legendary_impact';
+  | 'sfx_legendary_impact'
+  | 'bg_faultline'
+  | 'fx_floor_cracks'
+  | 'fx_floor_dust'
+  | 'icon_sector'
+  | 'icon_conveyor'
+  | 'sfx_faultline_knock'
+  | 'sfx_faultline_warning'
+  | 'sfx_conveyor_shift'
+  | 'sfx_floor_collapse'
+  | 'sfx_sector_safe'
+  | 'amb_faultline'
+  | 'music_faultline';
 
 export interface AssetDefinition {
   id: AssetId;
@@ -105,6 +117,21 @@ function audio(id: AssetId, critical = false): AssetDefinition {
     category: 'audio',
     kind: 'audio',
     src: `${import.meta.env.BASE_URL}assets/audio/${id}.wav`,
+    critical,
+  };
+}
+function breakoutAsset(
+  id: AssetId,
+  kind: 'image' | 'audio',
+  extension: 'svg' | 'wav',
+  critical = false,
+): AssetDefinition {
+  return {
+    id,
+    category: 'breakout',
+    kind,
+    src: `${import.meta.env.BASE_URL}assets/breakout/${id}.${extension}`,
+    ...(kind === 'image' ? { fallbackSrc: transparentPixel } : {}),
     critical,
   };
 }
@@ -195,6 +222,18 @@ const definitions: AssetDefinition[] = [
       'sfx_legendary_impact',
     ] as const
   ).map((id) => audio(id)),
+  breakoutAsset('bg_faultline', 'image', 'svg', true),
+  breakoutAsset('fx_floor_cracks', 'image', 'svg'),
+  breakoutAsset('fx_floor_dust', 'image', 'svg'),
+  breakoutAsset('icon_sector', 'image', 'svg'),
+  breakoutAsset('icon_conveyor', 'image', 'svg'),
+  breakoutAsset('sfx_faultline_knock', 'audio', 'wav'),
+  breakoutAsset('sfx_faultline_warning', 'audio', 'wav'),
+  breakoutAsset('sfx_conveyor_shift', 'audio', 'wav'),
+  breakoutAsset('sfx_floor_collapse', 'audio', 'wav'),
+  breakoutAsset('sfx_sector_safe', 'audio', 'wav'),
+  breakoutAsset('amb_faultline', 'audio', 'wav'),
+  breakoutAsset('music_faultline', 'audio', 'wav'),
 ];
 
 export const assetManifest: Readonly<Record<AssetId, Readonly<AssetDefinition>>> = Object.freeze(

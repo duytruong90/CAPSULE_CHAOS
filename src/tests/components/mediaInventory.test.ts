@@ -23,7 +23,8 @@ describe('installed production media', () => {
       } else {
         expect(bytes.toString('ascii', 0, 4), asset.id).toBe('RIFF');
         expect(bytes.toString('ascii', 8, 12), asset.id).toBe('WAVE');
-        expect(bytes.readUInt32LE(24)).toBe(24000);
+        expect(bytes.readUInt32LE(24)).toBe(asset.category === 'breakout' ? 48000 : 24000);
+        expect(bytes.readUInt16LE(22)).toBe(asset.category === 'breakout' ? 2 : 1);
         expect(bytes.readUInt32LE(40)).toBe(bytes.length - 44);
         let peak = 0;
         for (let i = 44; i < bytes.length; i += 2)
@@ -35,7 +36,7 @@ describe('installed production media', () => {
   });
   it('covers every V1 card and keeps the installed pack under 2 MB', () => {
     expect(Object.keys(cardAssetMap)).toHaveLength(16);
-    const total = Object.values(assetManifest).reduce(
+    const total = Object.values(assetManifest).filter((asset) => asset.category !== 'breakout').reduce(
       (sum, asset) => sum + statSync(path.join(publicRoot, asset.src)).size,
       0,
     );

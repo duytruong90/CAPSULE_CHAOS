@@ -1,0 +1,75 @@
+.interstitial {
+  display: grid;
+  width: 1920px;
+  height: 1080px;
+  padding: 132px 160px 164px;
+  place-content: center;
+  place-items: center;
+  overflow: hidden;
+  color: #effcff;
+  background:
+    radial-gradient(circle at 50% 54%, rgba(80, 216, 232, 0.16), transparent 26%),
+    linear-gradient(145deg, #0b1b28, #030812 72%);
+  text-align: center;
+}
+
+.interstitial p {
+  margin: 0 0 22px;
+  color: #74e6ef;
+  font-size: 24px;
+  font-weight: 900;
+  letter-spacing: 0.22em;
+}
+
+.interstitial h1 {
+  margin: 0;
+  font-size: 108px;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-shadow: 0 0 56px rgba(80, 216, 232, 0.22);
+}
+
+.interstitial strong {
+  margin-top: 38px;
+  color: #f1c76c;
+  font-size: 32px;
+  letter-spacing: 0.14em;
+}
+
+.interstitial > span {
+  max-width: 1040px;
+  margin-top: 24px;
+  color: #aec7d2;
+  font-size: 24px;
+  line-height: 1.5;
+}
+
+.faultlineIntro {
+  background:
+    linear-gradient(rgba(3, 8, 18, 0.28), rgba(3, 8, 18, 0.72)),
+    url('/assets/breakout/bg_faultline.svg') center/cover,
+    #07111e;
+}
+
+.completion {
+  background: radial-gradient(circle at 50% 45%, rgba(80, 216, 232, 0.2), transparent 34%), #07111e;
+}
+
+.nameList {
+  display: flex;
+  max-width: 1400px;
+  margin-top: 42px;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.nameList span {
+  padding: 12px 18px;
+  border: 1px solid rgba(80, 216, 232, 0.32);
+  border-radius: 8px;
+  color: #eafcff;
+  background: rgba(7, 17, 30, 0.84);
+  font-size: 24px;
+  font-weight: 750;
+}

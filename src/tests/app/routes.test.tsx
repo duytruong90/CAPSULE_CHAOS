@@ -23,6 +23,13 @@ describe('application routes', () => {
     expect(screen.getByRole('heading', { name: /game stage/i })).toBeInTheDocument();
   });
 
+  it('renders the isolated Faultline development fixture', () => {
+    renderRoute('/dev/breakout/faultline');
+
+    expect(screen.getByRole('main', { name: /faultline development fixture/i })).toBeInTheDocument();
+    expect(screen.getByText('TWO SECTORS WILL FALL.')).toBeInTheDocument();
+  });
+
   it('redirects the root route to setup', async () => {
     renderRoute('/');
 

@@ -6,6 +6,7 @@
   "packageManager": "pnpm@11.19.0",
   "scripts": {
     "assets:build": "node scripts/build-media.mjs",
+    "assets:breakout": "node scripts/build-breakout-media.mjs",
     "dev": "vite",
     "build": "tsc -b && vite build",
     "typecheck": "tsc -b --pretty false",

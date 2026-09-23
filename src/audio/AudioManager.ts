@@ -1,4 +1,5 @@
 import type { CardRarity } from '../game/cards/cardTypes';
+import type { BreakoutCueBus, BreakoutCueId } from '../presentation/breakout/cueSheet';
 
 export type AudioCue =
   | 'capsule.spin'
@@ -13,10 +14,13 @@ export type AudioCue =
   | 'final.glitch'
   | 'final.winner'
   | `card.${CardRarity}.charge`
-  | `card.${CardRarity}.impact`;
+  | `card.${CardRarity}.impact`
+  | BreakoutCueId;
 export interface AudioCueEvent {
   cue: AudioCue;
   eventId: string;
+  gain?: number;
+  bus?: BreakoutCueBus;
 }
 
 /** Asset adapters may subscribe here. Missing audio never gates visual completion. */

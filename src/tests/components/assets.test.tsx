@@ -95,4 +95,44 @@ describe('Astra asset integration', () => {
     expect(createAudio).toHaveBeenCalled();
     uninstall();
   });
+
+  it('keeps one music bed, one ambience bed, and the two newest transient voices', () => {
+    const players: Array<{
+      play: ReturnType<typeof vi.fn>;
+      pause: ReturnType<typeof vi.fn>;
+      volume: number;
+      currentTime: number;
+      onended: null | (() => void);
+      onerror: null | (() => void);
+    }> = [];
+    const uninstall = installManifestAudioAdapter(() => {
+      const player = {
+        play: vi.fn(() => Promise.resolve()),
+        pause: vi.fn(),
+        volume: 1,
+        currentTime: 0,
+        onended: null,
+        onerror: null,
+      };
+      players.push(player);
+      return player;
+    });
+    audioManager.setMuted(false);
+    audioManager.cue(
+      { cue: 'faultline.ambience', eventId: 'wave', bus: 'ambience', gain: 0.12 },
+      true,
+    );
+    audioManager.cue({ cue: 'faultline.music', eventId: 'wave', bus: 'music', gain: 0.18 }, true);
+    for (const cue of ['faultline.knock-1', 'faultline.knock-2', 'faultline.knock-3'] as const) {
+      audioManager.cue({ cue, eventId: 'wave', bus: 'transient', gain: 0.45 }, true);
+    }
+
+    expect(players).toHaveLength(5);
+    expect(players[0]!.pause).not.toHaveBeenCalled();
+    expect(players[1]!.pause).not.toHaveBeenCalled();
+    expect(players[2]!.pause).toHaveBeenCalledOnce();
+    expect(players[0]!.volume).toBe(0.06);
+    expect(players[1]!.volume).toBe(0.09);
+    uninstall();
+  });
 });

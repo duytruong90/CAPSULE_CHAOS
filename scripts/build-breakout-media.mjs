@@ -120,6 +120,73 @@ await save(
   ),
 );
 
+await save(
+  'bg_final_clash.svg',
+  svg(
+    1920,
+    1080,
+    '<rect width="1920" height="1080" fill="#0B0C19"/><path d="M0 0h1920v132H0zM0 916h1920v164H0z" fill="#060711"/><ellipse cx="960" cy="510" rx="300" ry="300" fill="#111329" stroke="#282A45" stroke-width="34"/><circle cx="960" cy="510" r="212" fill="#090A16" stroke="#8B9BDF" stroke-opacity=".3" stroke-width="8"/><circle cx="960" cy="510" r="126" fill="#05060D" stroke="#EDC46B" stroke-opacity=".24" stroke-width="5"/><path d="M96 790h560l76-96H208Zm1728 0h-560l-76-96h524Z" fill="#17192D" stroke="#8B9BDF" stroke-opacity=".36" stroke-width="6"/><path d="M260 0 520 420M1660 0 1400 420" stroke="#8B9BDF" stroke-opacity=".12" stroke-width="110"/><g stroke="#282A45" stroke-width="5" opacity=".8"><path d="M64 160h560M1296 160h560M64 820h560M1296 820h560"/><path d="M94 180v600M1826 180v600"/></g>',
+  ),
+);
+
+await save(
+  'img_clash_plate.svg',
+  svg(
+    256,
+    320,
+    '<rect x="22" y="18" width="212" height="284" rx="32" fill="#282A45" stroke="#8B9BDF" stroke-width="10"/><rect x="42" y="40" width="172" height="240" rx="22" fill="#111329" stroke="#5B648E" stroke-width="5"/><circle cx="128" cy="154" r="58" fill="#0B0C19" stroke="#8B9BDF" stroke-opacity=".45" stroke-width="8"/><path d="M100 154h56M128 126v56" stroke="#EDC46B" stroke-opacity=".5" stroke-width="8"/>',
+  ),
+);
+
+await save(
+  'icon_pulse.svg',
+  svg(
+    256,
+    256,
+    '<g fill="none" stroke="#F2BE65" stroke-width="15"><circle cx="128" cy="128" r="28"/><circle cx="128" cy="128" r="64"/><circle cx="128" cy="128" r="102"/></g><circle cx="128" cy="128" r="10" fill="#FFF1C8"/>',
+  ),
+);
+await save(
+  'icon_hack.svg',
+  svg(
+    256,
+    256,
+    '<path d="M38 202h62v-52h52V98h66V40" fill="none" stroke="#65DDE1" stroke-width="18" stroke-linejoin="round"/><g fill="#0B0C19" stroke="#65DDE1" stroke-width="12"><rect x="18" y="182" width="40" height="40"/><rect x="132" y="78" width="40" height="40"/><rect x="198" y="20" width="40" height="40"/></g>',
+  ),
+);
+await save(
+  'icon_barrier.svg',
+  svg(
+    256,
+    256,
+    '<path d="M128 18 224 54v72c0 62-38 96-96 116-58-20-96-54-96-116V54Z" fill="#312B49" stroke="#AE9BE8" stroke-width="15"/><path d="M128 20v216M40 80l88 48 88-48" fill="none" stroke="#D4C9F5" stroke-opacity=".62" stroke-width="9"/>',
+  ),
+);
+await save(
+  'icon_championship_point.svg',
+  svg(
+    256,
+    256,
+    '<path d="m128 22 24 64 68-20-34 60 52 44-70 8-8 70-46-54-60 34 22-68-66-24 66-24-22-68 60 34Z" fill="none" stroke="#EDC46B" stroke-width="12" stroke-linejoin="round"/>',
+  ),
+);
+await save(
+  'fx_clash_aperture.svg',
+  svg(
+    1920,
+    1080,
+    '<g transform="translate(960 510)" fill="none" stroke="#8B9BDF" stroke-opacity=".34"><circle r="310" stroke-width="7" stroke-dasharray="94 34"/><circle r="254" stroke-width="5" stroke-dasharray="38 22"/><circle r="180" stroke="#EDC46B" stroke-opacity=".24" stroke-width="6" stroke-dasharray="70 45"/></g>',
+  ),
+);
+await save(
+  'fx_clash_victory.svg',
+  svg(
+    1920,
+    1080,
+    '<defs><radialGradient id="victory"><stop stop-color="#EDC46B" stop-opacity=".42"/><stop offset=".42" stop-color="#EDC46B" stop-opacity=".08"/><stop offset="1" stop-color="#EDC46B" stop-opacity="0"/></radialGradient></defs><ellipse cx="960" cy="510" rx="780" ry="520" fill="url(#victory)"/><g stroke="#FFF0B8" stroke-opacity=".28" stroke-width="10"><path d="M960 500 220 80M960 500 520 0M960 500 1400 0M960 500 1700 80M960 500 1840 580M960 500 80 580"/></g>',
+  ),
+);
+
 const sampleRate = 48_000;
 const channelCount = 2;
 const peakLimit = 10 ** (-3 / 20);
@@ -270,10 +337,96 @@ const cues = {
       gain: index % 4 === 0 ? 0.2 : 0.11,
     })),
   ],
+  sfx_clash_charge: [
+    2,
+    [
+      { hz: 74, to: 286, length: 1.96, gain: 0.25, sustain: true },
+      { hz: 148, to: 572, length: 1.9, gain: 0.1, sustain: true },
+    ],
+  ],
+  sfx_clash_flip: [
+    0.35,
+    [
+      { hz: 740, to: 146, length: 0.3, gain: 0.34, noise: 0.18 },
+      { at: 0.08, hz: 980, to: 210, length: 0.2, gain: 0.22 },
+    ],
+  ],
+  sfx_pulse_overload: [
+    1.2,
+    [
+      { hz: 220, to: 660, length: 0.8, gain: 0.22 },
+      { at: 0.72, hz: 920, to: 80, length: 0.42, gain: 0.28, noise: 0.3 },
+    ],
+  ],
+  sfx_hack_unlock: [
+    1.2,
+    [
+      { at: 0.15, hz: 330, length: 0.18, gain: 0.25 },
+      { at: 0.45, hz: 440, length: 0.18, gain: 0.25 },
+      { at: 0.75, hz: 587, length: 0.3, gain: 0.28 },
+    ],
+  ],
+  sfx_barrier_reflect: [
+    1.2,
+    [
+      { hz: 94, to: 48, length: 0.55, gain: 0.42, noise: 0.12 },
+      { at: 0.36, hz: 246, to: 520, length: 0.76, gain: 0.2 },
+    ],
+  ],
+  sfx_clash_point: [
+    0.7,
+    [
+      { hz: 280, to: 760, length: 0.6, gain: 0.22 },
+      { at: 0.6, hz: 1240, length: 0.09, gain: 0.42 },
+    ],
+  ],
+  sfx_clash_advance: [
+    1,
+    [
+      { hz: 330, to: 523, length: 0.7, gain: 0.24 },
+      { at: 0.2, hz: 494, to: 784, length: 0.72, gain: 0.2 },
+    ],
+  ],
+  sfx_breakout_winner: [
+    6,
+    [
+      { hz: 196, length: 1.8, gain: 0.2, sustain: true },
+      { at: 1.5, hz: 247, length: 1.9, gain: 0.22, sustain: true },
+      { at: 3.2, hz: 330, length: 2.7, gain: 0.24, sustain: true },
+      { at: 3.2, hz: 494, length: 2.7, gain: 0.12, sustain: true },
+    ],
+  ],
+  amb_final_clash: [
+    8,
+    [
+      { hz: 38, length: 8, gain: 0.1, sustain: true },
+      { hz: 76, length: 8, gain: 0.04, noise: 0.05, sustain: true },
+    ],
+  ],
+  music_clash_semifinal: [
+    9.6,
+    Array.from({ length: 16 }, (_, index) => ({
+      at: index * 0.6,
+      hz: index % 4 === 0 ? 110 : 82,
+      to: 55,
+      length: 0.34,
+      gain: index % 4 === 0 ? 0.18 : 0.09,
+    })),
+  ],
+  music_clash_final: [
+    12,
+    Array.from({ length: 16 }, (_, index) => ({
+      at: index * 0.75,
+      hz: index % 4 === 0 ? 98 : 65,
+      to: 44,
+      length: 0.5,
+      gain: index % 4 === 0 ? 0.17 : 0.08,
+    })),
+  ],
 };
 
 for (const [name, [duration, voices]] of Object.entries(cues)) {
   await save(`${name}.wav`, createWave(duration, voices));
 }
 
-console.log(`Built ${11 + Object.keys(cues).length} deterministic Breakout assets in ${output}`);
+console.log(`Built ${19 + Object.keys(cues).length} deterministic Breakout assets in ${output}`);

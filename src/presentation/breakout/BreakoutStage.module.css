@@ -58,6 +58,13 @@
     #081725;
 }
 
+.finalClashIntro {
+  background:
+    linear-gradient(rgba(6, 7, 18, 0.16), rgba(6, 7, 18, 0.74)),
+    url('/assets/breakout/bg_final_clash.svg') center/cover,
+    #0b0c19;
+}
+
 .completion {
   background: radial-gradient(circle at 50% 45%, rgba(80, 216, 232, 0.2), transparent 34%), #07111e;
 }

@@ -41,6 +41,15 @@ describe('application routes', () => {
     expect(screen.getByText(/EVERYONE MOVES TOGETHER/u)).toBeInTheDocument();
   });
 
+  it('renders the isolated Final Clash development fixture', () => {
+    renderRoute('/dev/breakout/final-clash');
+
+    expect(
+      screen.getByRole('main', { name: /final clash development fixture/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('OFFICIAL WINNER')).toBeInTheDocument();
+  });
+
   it('redirects the root route to setup', async () => {
     renderRoute('/');
 

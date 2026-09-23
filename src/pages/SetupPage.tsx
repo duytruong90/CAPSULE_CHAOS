@@ -4,19 +4,13 @@ import { useAppState } from '../app/useAppState';
 import { AppChrome } from '../components/AppChrome/AppChrome';
 import { GameStage } from '../components/GameStage/GameStage';
 import { ENTRY_LIMITS, validateSetup } from '../game/engine/entryValidation';
-import type { AnimationSpeed, FakeoutIntensity } from '../game/state/setupTypes';
+import type { AnimationSpeed } from '../game/state/setupTypes';
 import styles from './SetupPage.module.css';
 
 const animationSpeedOptions: ReadonlyArray<{ value: AnimationSpeed; label: string }> = [
   { value: 'fast', label: 'Fast' },
   { value: 'normal', label: 'Normal' },
   { value: 'cinematic', label: 'Cinematic' },
-];
-
-const fakeoutOptions: ReadonlyArray<{ value: FakeoutIntensity; label: string }> = [
-  { value: 'low', label: 'Low' },
-  { value: 'standard', label: 'Standard' },
-  { value: 'high', label: 'High' },
 ];
 
 type BooleanSetupConfigKey =
@@ -47,6 +41,10 @@ export function SetupPage() {
     recoveryAvailable,
     resumeGame,
     abandonSession,
+    legacySessionJson,
+    rejectedRecoveryJson,
+    dismissLegacySession,
+    storageStatus,
   } = useAppState();
   const validation = useMemo(
     () =>
@@ -76,6 +74,15 @@ export function SetupPage() {
     updateSetupConfig({ [key]: checked });
   };
 
+  const downloadJson = (json: string, filename: string) => {
+    const url = URL.createObjectURL(new Blob([json], { type: 'application/json' }));
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = filename;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <GameStage label="Capsule Chaos setup screen">
       <div className={styles.page}>
@@ -94,6 +101,44 @@ export function SetupPage() {
             </button>
           </aside>
         )}
+        {legacySessionJson && !recoveryAvailable && (
+          <aside className={styles.recovery} aria-label="Previous-rules session found">
+            <div>
+              <strong>A previous-rules session is saved. This version cannot resume it.</strong>
+              <span>The original bytes will remain untouched in local storage.</span>
+            </div>
+            <button
+              className="button buttonSecondary"
+              onClick={() =>
+                downloadJson(legacySessionJson, 'capsule-chaos-previous-rules-session.json')
+              }
+            >
+              Download previous session JSON
+            </button>
+            <button className="button buttonPrimary" onClick={dismissLegacySession}>
+              Start a new Breakout
+            </button>
+          </aside>
+        )}
+        {rejectedRecoveryJson && (
+          <aside className={styles.recovery} aria-label="Unrecoverable Breakout found">
+            <div>
+              <strong>{lockError ?? 'A saved Breakout could not be verified.'}</strong>
+              <span>Download the saved bytes before abandoning this recovery record.</span>
+            </div>
+            <button
+              className="button buttonSecondary"
+              onClick={() =>
+                downloadJson(rejectedRecoveryJson, 'capsule-chaos-unverified-recovery.json')
+              }
+            >
+              Download saved session JSON
+            </button>
+            <button className="button buttonPrimary" onClick={abandonSession}>
+              Abandon saved Breakout
+            </button>
+          </aside>
+        )}
         <form className={styles.shell} onSubmit={handleSubmit} noValidate>
           <div className={styles.introRow}>
             <div>
@@ -103,8 +148,8 @@ export function SetupPage() {
               </h1>
             </div>
             <div className={styles.introMeta}>
-              <span>Recommended</span>
-              <strong>30–60 players</strong>
+              <span>Breakout format</span>
+              <strong>1–1000+ entries supported</strong>
               <p>Names are case-sensitive. Unicode-equivalent spellings count as duplicates.</p>
             </div>
           </div>
@@ -188,7 +233,7 @@ export function SetupPage() {
                   <p>Step 02</p>
                   <h2 id="options-heading">Show settings</h2>
                 </div>
-                <span className={styles.phaseTag}>Phase 02</span>
+                <span className={styles.phaseTag}>Three acts</span>
               </div>
 
               <fieldset className={styles.optionGroup}>
@@ -203,25 +248,6 @@ export function SetupPage() {
                         checked={setupDraft.config.animationSpeed === option.value}
                         disabled={controlsDisabled}
                         onChange={() => updateSetupConfig({ animationSpeed: option.value })}
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-
-              <fieldset className={styles.optionGroup}>
-                <legend>Fake-out intensity</legend>
-                <div className={styles.segmentedControl}>
-                  {fakeoutOptions.map((option) => (
-                    <label key={option.value}>
-                      <input
-                        type="radio"
-                        name="fakeout-intensity"
-                        value={option.value}
-                        checked={setupDraft.config.fakeoutIntensity === option.value}
-                        disabled={controlsDisabled}
-                        onChange={() => updateSetupConfig({ fakeoutIntensity: option.value })}
                       />
                       <span>{option.label}</span>
                     </label>
@@ -285,6 +311,11 @@ export function SetupPage() {
               </div>
 
               <div className={styles.validationSummary} aria-live="polite">
+                {storageStatus === 'unavailable' && (
+                  <p className={styles.warningMessage}>
+                    Refresh recovery unavailable — the locked session remains downloadable in-game.
+                  </p>
+                )}
                 {lockError ? (
                   <p className={styles.errorMessage}>{lockError}</p>
                 ) : validation.errors.length === 0 && validation.warnings.length === 0 ? (
@@ -321,7 +352,7 @@ export function SetupPage() {
                 </Link>
               </div>
               <p className={styles.startHelp} id="start-help">
-                Start securely locks this roster and precomputes the complete baseline outcome.
+                Start securely locks this roster and precomputes the complete three-act outcome.
               </p>
             </section>
           </div>

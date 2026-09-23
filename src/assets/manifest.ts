@@ -98,7 +98,26 @@ export type AssetId =
   | 'sfx_exit_lock'
   | 'sfx_photo_finish'
   | 'amb_escape_run'
-  | 'music_escape_run';
+  | 'music_escape_run'
+  | 'bg_final_clash'
+  | 'img_clash_plate'
+  | 'icon_pulse'
+  | 'icon_hack'
+  | 'icon_barrier'
+  | 'icon_championship_point'
+  | 'fx_clash_aperture'
+  | 'fx_clash_victory'
+  | 'sfx_clash_charge'
+  | 'sfx_clash_flip'
+  | 'sfx_pulse_overload'
+  | 'sfx_hack_unlock'
+  | 'sfx_barrier_reflect'
+  | 'sfx_clash_point'
+  | 'sfx_clash_advance'
+  | 'sfx_breakout_winner'
+  | 'amb_final_clash'
+  | 'music_clash_semifinal'
+  | 'music_clash_final';
 
 export interface AssetDefinition {
   id: AssetId;
@@ -258,6 +277,25 @@ const definitions: AssetDefinition[] = [
   breakoutAsset('sfx_photo_finish', 'audio', 'wav'),
   breakoutAsset('amb_escape_run', 'audio', 'wav'),
   breakoutAsset('music_escape_run', 'audio', 'wav'),
+  breakoutAsset('bg_final_clash', 'image', 'svg', true),
+  breakoutAsset('img_clash_plate', 'image', 'svg'),
+  breakoutAsset('icon_pulse', 'image', 'svg'),
+  breakoutAsset('icon_hack', 'image', 'svg'),
+  breakoutAsset('icon_barrier', 'image', 'svg'),
+  breakoutAsset('icon_championship_point', 'image', 'svg'),
+  breakoutAsset('fx_clash_aperture', 'image', 'svg'),
+  breakoutAsset('fx_clash_victory', 'image', 'svg'),
+  breakoutAsset('sfx_clash_charge', 'audio', 'wav'),
+  breakoutAsset('sfx_clash_flip', 'audio', 'wav'),
+  breakoutAsset('sfx_pulse_overload', 'audio', 'wav'),
+  breakoutAsset('sfx_hack_unlock', 'audio', 'wav'),
+  breakoutAsset('sfx_barrier_reflect', 'audio', 'wav'),
+  breakoutAsset('sfx_clash_point', 'audio', 'wav'),
+  breakoutAsset('sfx_clash_advance', 'audio', 'wav'),
+  breakoutAsset('sfx_breakout_winner', 'audio', 'wav'),
+  breakoutAsset('amb_final_clash', 'audio', 'wav'),
+  breakoutAsset('music_clash_semifinal', 'audio', 'wav'),
+  breakoutAsset('music_clash_final', 'audio', 'wav'),
 ];
 
 export const assetManifest: Readonly<Record<AssetId, Readonly<AssetDefinition>>> = Object.freeze(

@@ -1,10 +1,10 @@
 import type { PlayerEntry } from '../state/setupTypes';
 
 export const ENTRY_LIMITS = Object.freeze({
-  hardMinimum: 8,
-  smallPoolThreshold: 20,
-  recommendedMinimum: 30,
-  recommendedMaximum: 60,
+  hardMinimum: 1,
+  smallPoolThreshold: 21,
+  recommendedMinimum: 21,
+  recommendedMaximum: 100,
   largePoolThreshold: 100,
 });
 
@@ -14,9 +14,10 @@ export type ValidationCode =
   | 'giveaway-name-required'
   | 'minimum-entries'
   | 'duplicate-entries'
-  | 'small-pool'
-  | 'below-recommended-range'
-  | 'above-recommended-range'
+  | 'one-entry'
+  | 'direct-final-clash'
+  | 'compact-run'
+  | 'all-three-acts'
   | 'large-pool'
   | 'duplicates-allowed';
 
@@ -135,29 +136,35 @@ export function validateSetup(
     }
   }
 
-  if (count < ENTRY_LIMITS.smallPoolThreshold) {
+  if (count === 1) {
     warnings.push({
-      code: 'small-pool',
+      code: 'one-entry',
       severity: 'warning',
-      message: 'Capsule Chaos is designed for larger pools; fewer than 20 entries will be shorter.',
+      message: 'One entry: this run will declare that entry as the winner.',
     });
-  } else if (count < ENTRY_LIMITS.recommendedMinimum) {
+  } else if (count >= 2 && count <= 4) {
     warnings.push({
-      code: 'below-recommended-range',
+      code: 'direct-final-clash',
       severity: 'warning',
-      message: 'This roster is below the recommended 30–60 player range.',
+      message: 'Small field: proceeding directly to Final Clash.',
+    });
+  } else if (count >= 5 && count <= 16) {
+    warnings.push({
+      code: 'compact-run',
+      severity: 'warning',
+      message: 'Compact run: Escape Run and Final Clash.',
+    });
+  } else if (count >= 17 && count <= 20) {
+    warnings.push({
+      code: 'all-three-acts',
+      severity: 'warning',
+      message: 'All three acts; a larger field creates more shared suspense.',
     });
   } else if (count > ENTRY_LIMITS.largePoolThreshold) {
     warnings.push({
       code: 'large-pool',
       severity: 'warning',
-      message: 'More than 100 entries may create a long opening phase.',
-    });
-  } else if (count > ENTRY_LIMITS.recommendedMaximum) {
-    warnings.push({
-      code: 'above-recommended-range',
-      severity: 'warning',
-      message: 'This roster is above the recommended 30–60 player range.',
+      message: 'Large field: names will page during Faultline.',
     });
   }
 

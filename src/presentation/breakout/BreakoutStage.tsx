@@ -2,6 +2,7 @@ import type { BreakoutTimelineEvent } from '../../game/breakout/buildBreakoutTim
 import type { BreakoutEntry } from '../../game/breakout/types';
 import { EscapeRunStage } from './EscapeRunStage';
 import { FaultlineStage } from './FaultlineStage';
+import { FinalClashStage } from './FinalClashStage';
 import styles from './BreakoutStage.module.css';
 
 interface BreakoutStageProps {
@@ -29,6 +30,16 @@ export function BreakoutStage({
         </section>
       );
     case 'act.started':
+      if (engineEvent.payload.actId === 'act-3') {
+        return (
+          <section className={`${styles.interstitial} ${styles.finalClashIntro}`}>
+            <p>ACT 3</p>
+            <h1>FINAL CLASH</h1>
+            <strong>THREE MOVES. ONE POINT EVERY EXCHANGE.</strong>
+            <span>Pulse beats Hack · Hack beats Barrier · Barrier beats Pulse.</span>
+          </section>
+        );
+      }
       if (engineEvent.payload.actId === 'act-2') {
         return (
           <section className={`${styles.interstitial} ${styles.escapeRunIntro}`}>
@@ -64,6 +75,18 @@ export function BreakoutStage({
     case 'race.beat-resolved':
       return (
         <EscapeRunStage
+          entries={entries}
+          event={engineEvent}
+          elapsedBaseMs={elapsedBaseMs}
+          reducedMotion={reducedMotion}
+        />
+      );
+    case 'clash.bracket-ready':
+    case 'clash.exchange-resolved':
+    case 'clash.final-ready':
+    case 'winner.declared':
+      return (
+        <FinalClashStage
           entries={entries}
           event={engineEvent}
           elapsedBaseMs={elapsedBaseMs}

@@ -4,6 +4,7 @@ import { NotFoundPage } from '../pages/NotFoundPage';
 import { SetupPage } from '../pages/SetupPage';
 import { BreakoutFaultlinePreviewPage } from '../pages/BreakoutFaultlinePreviewPage';
 import { BreakoutEscapeRunPreviewPage } from '../pages/BreakoutEscapeRunPreviewPage';
+import { BreakoutFinalClashPreviewPage } from '../pages/BreakoutFinalClashPreviewPage';
 
 const developmentRoutes: RouteObject[] = import.meta.env.DEV
   ? [
@@ -14,6 +15,10 @@ const developmentRoutes: RouteObject[] = import.meta.env.DEV
       {
         path: '/dev/breakout/escape-run',
         element: <BreakoutEscapeRunPreviewPage />,
+      },
+      {
+        path: '/dev/breakout/final-clash',
+        element: <BreakoutFinalClashPreviewPage />,
       },
     ]
   : [];

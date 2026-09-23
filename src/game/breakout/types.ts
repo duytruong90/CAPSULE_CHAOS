@@ -140,11 +140,22 @@ export interface ClashBracket {
   readonly winnerId: string;
 }
 
+export interface ClashMatchupView {
+  readonly matchId: MatchId;
+  readonly playerIds: readonly [string, string];
+  readonly pointsToWin: 2 | 3;
+}
+
 export interface ClashViewState {
   readonly kind: 'clash';
   readonly route: ClashBracket['route'];
+  readonly seededSeatIds: readonly string[];
+  readonly byePlayerId: string | null;
   readonly activeMatchIds: readonly MatchId[];
+  readonly playerIdsByMatch: Readonly<Record<string, readonly [string, string]>>;
+  readonly pointsToWinByMatch: Readonly<Record<string, 2 | 3>>;
   readonly scoreByMatch: Readonly<Record<string, readonly [number, number]>>;
+  readonly completedMatchIds: readonly MatchId[];
   readonly complete: boolean;
 }
 
@@ -171,6 +182,7 @@ export interface BreakoutEventPayloadByType {
     readonly route: ClashBracket['route'];
     readonly seededSeatIds: readonly string[];
     readonly byePlayerId: string | null;
+    readonly matchups: readonly ClashMatchupView[];
   };
   'clash.exchange-resolved': { readonly exchanges: readonly ClashExchange[] };
   'clash.final-ready': { readonly finalistIds: readonly [string, string] };
@@ -217,5 +229,22 @@ export interface FaultlineActResult extends FaultlineResult {
 
 export interface EscapeRunActResult extends EscapeRunResult {
   readonly entries: readonly BreakoutEntry[];
+  readonly events: readonly BreakoutEngineEvent[];
+}
+
+export interface FinalClashActResult {
+  readonly entries: readonly BreakoutEntry[];
+  readonly bracket: ClashBracket;
+  readonly events: readonly BreakoutEngineEvent[];
+}
+
+export interface BreakoutSimulationResult {
+  readonly entries: readonly BreakoutEntry[];
+  readonly faultline: FaultlineResult;
+  readonly escapeRun: EscapeRunResult;
+  readonly survivorIds: readonly string[];
+  readonly qualifierIds: readonly string[];
+  readonly bracket: ClashBracket;
+  readonly winnerId: string;
   readonly events: readonly BreakoutEngineEvent[];
 }

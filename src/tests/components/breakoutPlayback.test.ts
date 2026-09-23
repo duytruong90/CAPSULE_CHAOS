@@ -57,4 +57,22 @@ describe('BreakoutPlaybackController', () => {
     expect(playback.state.paused).toBe(true);
     expect(playback.skip()).toEqual(playback.state);
   });
+
+  it('restores checkpoints paused and requests persistence for host actions', () => {
+    const original = controller();
+    original.tick(1_000);
+    original.tick(2_000);
+    const checkpoint = original.getSnapshot();
+    const restored = new BreakoutPlaybackController(
+      buildFaultlineTimeline(simulateFaultlineAct(entries, seed, 'LOCK').events),
+      { animationSpeed: 'normal', autoAdvanceActs: true, checkpoint },
+    );
+
+    expect(restored.state.paused).toBe(true);
+    const before = restored.state.checkpointRevision;
+    restored.resume();
+    expect(restored.state.checkpointRevision).toBe(before + 1);
+    restored.pause();
+    expect(restored.state.checkpointRevision).toBe(before + 2);
+  });
 });

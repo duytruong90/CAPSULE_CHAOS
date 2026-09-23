@@ -19,7 +19,18 @@ export type BreakoutCueId =
   | 'race.ignition'
   | 'race.launch'
   | 'race.photo-finish'
-  | 'race.exit-lock';
+  | 'race.exit-lock'
+  | 'clash.ambience'
+  | 'clash.semifinal-music'
+  | 'clash.final-music'
+  | 'clash.charge'
+  | 'clash.flip'
+  | 'clash.pulse-overload'
+  | 'clash.hack-unlock'
+  | 'clash.barrier-reflect'
+  | 'clash.point'
+  | 'clash.advance'
+  | 'clash.winner';
 
 export interface BreakoutCue {
   readonly cueId: BreakoutCueId;
@@ -82,6 +93,64 @@ export function buildEscapeRunCueSheet(offsets: {
   }
   if (offsets.hasQualifications) {
     cues.push({ cueId: 'race.exit-lock', offsetBaseMs: offsets.resolution, bus: 'transient' });
+  }
+  return Object.freeze(cues.sort((left, right) => left.offsetBaseMs - right.offsetBaseMs));
+}
+
+export function buildFinalClashCueSheet(options: {
+  charge: number;
+  flip: number;
+  interaction: number;
+  resolution: number;
+  final: boolean;
+  winner: boolean;
+  exchanges: readonly { moves: readonly [string, string]; matchWinnerId: string | null }[];
+}): readonly BreakoutCue[] {
+  const cues: BreakoutCue[] = [
+    { cueId: 'clash.ambience', offsetBaseMs: 0, bus: 'ambience' },
+    {
+      cueId: options.final ? 'clash.final-music' : 'clash.semifinal-music',
+      offsetBaseMs: 0,
+      bus: 'music',
+    },
+    { cueId: 'clash.charge', offsetBaseMs: options.charge, bus: 'transient' },
+    { cueId: 'clash.flip', offsetBaseMs: options.flip, bus: 'transient' },
+  ];
+  options.exchanges.forEach((exchange) => {
+    const [left, right] = exchange.moves;
+    const winningMove =
+      (left === 'pulse' && right === 'hack') ||
+      (left === 'hack' && right === 'barrier') ||
+      (left === 'barrier' && right === 'pulse')
+        ? left
+        : right;
+    const cueId =
+      winningMove === 'pulse'
+        ? 'clash.pulse-overload'
+        : winningMove === 'hack'
+          ? 'clash.hack-unlock'
+          : 'clash.barrier-reflect';
+    cues.push({ cueId, offsetBaseMs: options.interaction, bus: 'transient' });
+  });
+  if (options.winner) {
+    cues.push({ cueId: 'clash.winner', offsetBaseMs: options.resolution, bus: 'fanfare' });
+  } else {
+    const hasAdvancement = options.exchanges.some((exchange) => exchange.matchWinnerId !== null);
+    const hasOrdinaryPoint = options.exchanges.some((exchange) => exchange.matchWinnerId === null);
+    if (hasOrdinaryPoint) {
+      cues.push({
+        cueId: 'clash.point',
+        offsetBaseMs: options.resolution - 600,
+        bus: 'transient',
+      });
+    }
+    if (hasAdvancement) {
+      cues.push({
+        cueId: 'clash.advance',
+        offsetBaseMs: options.resolution,
+        bus: 'transient',
+      });
+    }
   }
   return Object.freeze(cues.sort((left, right) => left.offsetBaseMs - right.offsetBaseMs));
 }

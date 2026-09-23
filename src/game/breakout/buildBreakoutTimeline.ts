@@ -8,6 +8,7 @@ import {
 } from './types';
 import {
   buildEscapeRunCueSheet,
+  buildFinalClashCueSheet,
   buildFaultlineCueSheet,
   type BreakoutCue,
 } from '../../presentation/breakout/cueSheet';
@@ -91,6 +92,57 @@ export function getRaceBeatTiming(
   });
 }
 
+export function getClashExchangeTiming(
+  event: Extract<BreakoutEngineEvent, { type: 'clash.exchange-resolved' | 'winner.declared' }>,
+) {
+  if (event.type === 'winner.declared' && event.payload.decisiveExchange === null) {
+    return Object.freeze({
+      final: true,
+      extraHold: 0,
+      charge: 0,
+      reveal: 0,
+      flip: 0,
+      interaction: 0,
+      pointTravel: 0,
+      resolution: 0,
+      duration: 8_000,
+    });
+  }
+  const exchanges =
+    event.type === 'winner.declared' ? [event.payload.decisiveExchange] : event.payload.exchanges;
+  const exchange = exchanges[0];
+  if (!exchange) throw new Error('Clash timeline event requires an exchange.');
+  const final = exchange.matchId === 'final';
+  if (!final) {
+    return Object.freeze({
+      final,
+      extraHold: 0,
+      charge: 2_000,
+      reveal: 4_000,
+      flip: 4_800,
+      interaction: 5_400,
+      pointTravel: 7_000,
+      resolution: 7_600,
+      duration: 12_000,
+    });
+  }
+  const bothScoresAre2 = exchange.scoreBefore[0] === 2 && exchange.scoreBefore[1] === 2;
+  const eitherScoreIs2 = exchange.scoreBefore[0] === 2 || exchange.scoreBefore[1] === 2;
+  const extraHold = bothScoresAre2 ? 4_000 : eitherScoreIs2 ? 2_000 : 0;
+  const resolution = 9_000 + extraHold;
+  return Object.freeze({
+    final,
+    extraHold,
+    charge: 2_400,
+    reveal: 4_800 + extraHold,
+    flip: 5_600 + extraHold,
+    interaction: 6_400 + extraHold,
+    pointTravel: 8_400 + extraHold,
+    resolution,
+    duration: resolution + (event.type === 'winner.declared' ? 10_000 : 5_000),
+  });
+}
+
 export function buildBreakoutTimeline(events: readonly BreakoutEngineEvent[]): BreakoutTimeline {
   const timelineEvents = events.flatMap((engineEvent): BreakoutTimelineEvent[] => {
     let durationBaseMs: number;
@@ -104,7 +156,11 @@ export function buildBreakoutTimeline(events: readonly BreakoutEngineEvent[]): B
         segments = Object.freeze({ lock: 0, complete: 8_000 });
         break;
       case 'act.started':
-        if (engineEvent.payload.actId === 'act-2') {
+        if (engineEvent.payload.actId === 'act-3') {
+          if (engineEvent.payload.inputIds.length === 1) return [];
+          durationBaseMs = 2_000;
+          segments = Object.freeze({ title: 0, complete: 2_000 });
+        } else if (engineEvent.payload.actId === 'act-2') {
           durationBaseMs = 10_000;
           segments = Object.freeze({
             conduitReveal: 0,
@@ -164,8 +220,75 @@ export function buildBreakoutTimeline(events: readonly BreakoutEngineEvent[]): B
           segments = Object.freeze({ lineup: 0, objective: 3_000, complete: 6_000 });
         }
         break;
+      case 'clash.bracket-ready':
+        durationBaseMs = 8_000;
+        segments = Object.freeze({
+          bracket: 0,
+          relationships: 2_500,
+          target: 5_000,
+          complete: 8_000,
+        });
+        break;
+      case 'clash.final-ready':
+        durationBaseMs = 8_000;
+        segments = Object.freeze({ finalists: 0, merge: 3_000, target: 6_000, complete: 8_000 });
+        break;
+      case 'clash.exchange-resolved': {
+        const timing = getClashExchangeTiming(engineEvent);
+        durationBaseMs = timing.duration;
+        resolutionBaseMs = timing.resolution;
+        segments = Object.freeze({
+          extraHold: timing.extraHold,
+          charge: timing.charge,
+          reveal: timing.reveal,
+          flip: timing.flip,
+          interaction: timing.interaction,
+          pointTravel: timing.pointTravel,
+          resolution: timing.resolution,
+          duration: timing.duration,
+        });
+        cues = buildFinalClashCueSheet({
+          charge: timing.charge,
+          flip: timing.flip,
+          interaction: timing.interaction,
+          resolution: timing.resolution,
+          final: timing.final,
+          winner: false,
+          exchanges: engineEvent.payload.exchanges,
+        });
+        break;
+      }
+      case 'winner.declared': {
+        const timing = getClashExchangeTiming(engineEvent);
+        durationBaseMs = timing.duration;
+        resolutionBaseMs = timing.resolution;
+        segments = Object.freeze({
+          extraHold: timing.extraHold,
+          charge: timing.charge,
+          reveal: timing.reveal,
+          flip: timing.flip,
+          interaction: timing.interaction,
+          pointTravel: timing.pointTravel,
+          resolution: timing.resolution,
+          duration: timing.duration,
+          controls: timing.resolution + 5_000,
+        });
+        cues =
+          engineEvent.payload.decisiveExchange === null
+            ? Object.freeze([{ cueId: 'clash.winner', offsetBaseMs: 0, bus: 'fanfare' } as const])
+            : buildFinalClashCueSheet({
+                charge: timing.charge,
+                flip: timing.flip,
+                interaction: timing.interaction,
+                resolution: timing.resolution,
+                final: true,
+                winner: true,
+                exchanges: [engineEvent.payload.decisiveExchange],
+              });
+        break;
+      }
       default:
-        throw new Error(`Breakout timeline cannot render ${engineEvent.type}.`);
+        throw new Error('Breakout timeline received an unsupported event.');
     }
 
     return [

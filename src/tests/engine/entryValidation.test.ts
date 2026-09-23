@@ -87,28 +87,49 @@ describe('setup validation boundaries', () => {
     expect(result.canStart).toBe(false);
   });
 
-  it('blocks fewer than eight entries and permits the hard minimum', () => {
-    const belowMinimum = validateSetup('Minimum test', names(7), false);
-    const atMinimum = validateSetup('Minimum test', names(8), false);
+  it('blocks an empty roster and permits one entry', () => {
+    const belowMinimum = validateSetup('Minimum test', '', false);
+    const atMinimum = validateSetup('Minimum test', names(1), false);
 
     expect(belowMinimum.errors.map((issue) => issue.code)).toContain('minimum-entries');
     expect(belowMinimum.canStart).toBe(false);
     expect(atMinimum.errors.map((issue) => issue.code)).not.toContain('minimum-entries');
     expect(atMinimum.canStart).toBe(true);
+    expect(belowMinimum.warnings).toEqual([]);
   });
 
   it.each([
-    { count: 19, expected: 'small-pool' },
-    { count: 20, expected: 'below-recommended-range' },
-    { count: 29, expected: 'below-recommended-range' },
-    { count: 61, expected: 'above-recommended-range' },
-    { count: 100, expected: 'above-recommended-range' },
+    { count: 1, expected: 'one-entry' },
+    { count: 2, expected: 'direct-final-clash' },
+    { count: 4, expected: 'direct-final-clash' },
+    { count: 5, expected: 'compact-run' },
+    { count: 16, expected: 'compact-run' },
+    { count: 17, expected: 'all-three-acts' },
+    { count: 20, expected: 'all-three-acts' },
     { count: 101, expected: 'large-pool' },
   ] as const)('warns appropriately at $count entries', ({ count, expected }) => {
     expect(warningCodes(count)).toContain(expected);
   });
 
-  it.each([30, 60])('has no pool-size warning at the recommended boundary %s', (count) => {
+  it.each([21, 100])('has no pool-size warning at the standard boundary %s', (count) => {
     expect(warningCodes(count)).toEqual([]);
+  });
+
+  it('uses the approved three-act guidance copy', () => {
+    expect(validateSetup('Copy', names(1), false).warnings[0]?.message).toBe(
+      'One entry: this run will declare that entry as the winner.',
+    );
+    expect(validateSetup('Copy', names(2), false).warnings[0]?.message).toBe(
+      'Small field: proceeding directly to Final Clash.',
+    );
+    expect(validateSetup('Copy', names(5), false).warnings[0]?.message).toBe(
+      'Compact run: Escape Run and Final Clash.',
+    );
+    expect(validateSetup('Copy', names(17), false).warnings[0]?.message).toBe(
+      'All three acts; a larger field creates more shared suspense.',
+    );
+    expect(validateSetup('Copy', names(101), false).warnings[0]?.message).toBe(
+      'Large field: names will page during Faultline.',
+    );
   });
 });

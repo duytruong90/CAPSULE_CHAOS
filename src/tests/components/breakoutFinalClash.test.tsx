@@ -34,6 +34,19 @@ function fixture(count = 4, finalSeed = '5'.repeat(64)) {
 }
 
 describe('Final Clash presentation', () => {
+  it('presents the three moves as Rock, Paper, and Scissors', () => {
+    const { roster, timeline } = fixture();
+    const bracket = timeline.events.find((event) => event.type === 'clash.bracket-ready');
+    if (!bracket) throw new Error('missing bracket fixture');
+    render(<BreakoutStage entries={roster} event={bracket} elapsedBaseMs={5_000} />);
+    expect(screen.getByText('ROCK')).toBeInTheDocument();
+    expect(screen.getByText('SCISSORS')).toBeInTheDocument();
+    expect(screen.getByText('PAPER')).toBeInTheDocument();
+    expect(screen.queryByText('PULSE')).not.toBeInTheDocument();
+    expect(screen.queryByText('HACK')).not.toBeInTheDocument();
+    expect(screen.queryByText('BARRIER')).not.toBeInTheDocument();
+  });
+
   it('uses the exact semifinal and score-triggered final timing formulas', () => {
     for (let sample = 0; sample < 80; sample += 1) {
       const { timeline } = fixture(4, sample.toString(16).padStart(64, '0'));

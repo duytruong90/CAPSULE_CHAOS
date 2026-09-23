@@ -27,9 +27,15 @@ interface FinalClashStageProps {
 }
 
 const MOVE_LABELS: Readonly<Record<ClashMove, string>> = Object.freeze({
-  pulse: 'PULSE',
-  hack: 'HACK',
-  barrier: 'BARRIER',
+  pulse: 'ROCK',
+  hack: 'SCISSORS',
+  barrier: 'PAPER',
+});
+
+const MOVE_ASSET_IDS = Object.freeze({
+  pulse: 'icon_rock',
+  hack: 'icon_scissors',
+  barrier: 'icon_paper',
 });
 
 function scorePips(score: number, target: 2 | 3) {
@@ -253,7 +259,7 @@ export function FinalClashStage({
           ? `${name(event.payload.winnerId)} WINS ${exchanges[0]!.scoreAfter[0]}–${exchanges[0]!.scoreAfter[1]}.`
           : interacting && exchanges[0]
             ? CLASH_RELATIONSHIPS[winningMove(exchanges[0])]
-            : 'PULSE BEATS HACK · HACK BEATS BARRIER · BARRIER BEATS PULSE'}
+            : 'ROCK BEATS SCISSORS · SCISSORS BEAT PAPER · PAPER BEATS ROCK'}
       </footer>
     </section>
   );
@@ -306,7 +312,7 @@ function MatchPanel({
             <div className={styles.movePlate} data-revealed={revealed && Boolean(exchange)}>
               {revealed && move ? (
                 <>
-                  <AssetImage assetId={`icon_${move}`} alt="" />
+                  <AssetImage assetId={MOVE_ASSET_IDS[move]} alt="" />
                   <span>{MOVE_LABELS[move]}</span>
                 </>
               ) : (
@@ -333,7 +339,7 @@ function MatchPanel({
       })}
       {interacting && exchange && (
         <div className={styles.interaction} data-move={winningMove(exchange)}>
-          <AssetImage assetId={`icon_${winningMove(exchange)}`} alt="" />
+          <AssetImage assetId={MOVE_ASSET_IDS[winningMove(exchange)]} alt="" />
           <span>{CLASH_RELATIONSHIPS[winningMove(exchange)]}</span>
         </div>
       )}
@@ -348,20 +354,20 @@ function RelationshipStrip({ detailed = false }: { detailed?: boolean }) {
   return (
     <div className={styles.relationshipStrip}>
       <span>
-        <AssetImage assetId="icon_pulse" alt="" />
-        PULSE
+        <AssetImage assetId="icon_rock" alt="" />
+        ROCK
       </span>
       <b>BEATS</b>
       <span>
-        <AssetImage assetId="icon_hack" alt="" />
-        HACK
+        <AssetImage assetId="icon_scissors" alt="" />
+        SCISSORS
       </span>
       <b>BEATS</b>
       <span>
-        <AssetImage assetId="icon_barrier" alt="" />
-        BARRIER
+        <AssetImage assetId="icon_paper" alt="" />
+        PAPER
       </span>
-      <b>BEATS PULSE</b>
+      <b>BEATS ROCK</b>
       {detailed && <small>Two distinct moves. One point every exchange.</small>}
     </div>
   );

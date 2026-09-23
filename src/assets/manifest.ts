@@ -101,9 +101,9 @@ export type AssetId =
   | 'music_escape_run'
   | 'bg_final_clash'
   | 'img_clash_plate'
-  | 'icon_pulse'
-  | 'icon_hack'
-  | 'icon_barrier'
+  | 'icon_rock'
+  | 'icon_scissors'
+  | 'icon_paper'
   | 'icon_championship_point'
   | 'fx_clash_aperture'
   | 'fx_clash_victory'
@@ -279,9 +279,9 @@ const definitions: AssetDefinition[] = [
   breakoutAsset('music_escape_run', 'audio', 'wav'),
   breakoutAsset('bg_final_clash', 'image', 'svg', true),
   breakoutAsset('img_clash_plate', 'image', 'svg'),
-  breakoutAsset('icon_pulse', 'image', 'svg'),
-  breakoutAsset('icon_hack', 'image', 'svg'),
-  breakoutAsset('icon_barrier', 'image', 'svg'),
+  breakoutAsset('icon_rock', 'image', 'svg'),
+  breakoutAsset('icon_scissors', 'image', 'svg'),
+  breakoutAsset('icon_paper', 'image', 'svg'),
   breakoutAsset('icon_championship_point', 'image', 'svg'),
   breakoutAsset('fx_clash_aperture', 'image', 'svg'),
   breakoutAsset('fx_clash_victory', 'image', 'svg'),

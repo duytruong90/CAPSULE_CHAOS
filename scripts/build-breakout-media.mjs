@@ -139,27 +139,27 @@ await save(
 );
 
 await save(
-  'icon_pulse.svg',
+  'icon_rock.svg',
   svg(
     256,
     256,
-    '<g fill="none" stroke="#F2BE65" stroke-width="15"><circle cx="128" cy="128" r="28"/><circle cx="128" cy="128" r="64"/><circle cx="128" cy="128" r="102"/></g><circle cx="128" cy="128" r="10" fill="#FFF1C8"/>',
+    '<path d="M34 164 66 76l60-48 72 34 26 86-48 74H80Z" fill="#4A3722" stroke="#F2BE65" stroke-width="14" stroke-linejoin="round"/><path d="m66 76 62 54 70-68M128 130l48 92M34 164l94-34" fill="none" stroke="#FFF1C8" stroke-opacity=".52" stroke-width="9" stroke-linejoin="round"/>',
   ),
 );
 await save(
-  'icon_hack.svg',
+  'icon_scissors.svg',
   svg(
     256,
     256,
-    '<path d="M38 202h62v-52h52V98h66V40" fill="none" stroke="#65DDE1" stroke-width="18" stroke-linejoin="round"/><g fill="#0B0C19" stroke="#65DDE1" stroke-width="12"><rect x="18" y="182" width="40" height="40"/><rect x="132" y="78" width="40" height="40"/><rect x="198" y="20" width="40" height="40"/></g>',
+    '<g fill="none" stroke="#65DDE1" stroke-width="14" stroke-linecap="round" stroke-linejoin="round"><circle cx="62" cy="72" r="32"/><circle cx="62" cy="184" r="32"/><path d="m88 92 132 92M88 164 220 72"/></g><circle cx="121" cy="128" r="10" fill="#D8FFFF"/>',
   ),
 );
 await save(
-  'icon_barrier.svg',
+  'icon_paper.svg',
   svg(
     256,
     256,
-    '<path d="M128 18 224 54v72c0 62-38 96-96 116-58-20-96-54-96-116V54Z" fill="#312B49" stroke="#AE9BE8" stroke-width="15"/><path d="M128 20v216M40 80l88 48 88-48" fill="none" stroke="#D4C9F5" stroke-opacity=".62" stroke-width="9"/>',
+    '<path d="M56 22h98l48 48v164H56Z" fill="#312B49" stroke="#AE9BE8" stroke-width="14" stroke-linejoin="round"/><path d="M154 22v50h48M84 112h90M84 150h90M84 188h66" fill="none" stroke="#D4C9F5" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>',
   ),
 );
 await save(

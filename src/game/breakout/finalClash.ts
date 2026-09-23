@@ -9,9 +9,9 @@ export const CLASH_BEATS = Object.freeze({
 } as const satisfies Record<ClashMove, ClashMove>);
 
 export const CLASH_RELATIONSHIPS = Object.freeze({
-  pulse: 'Pulse overloads Hack’s circuit.',
-  hack: 'Hack opens the Barrier’s lock.',
-  barrier: 'Barrier absorbs and reflects Pulse.',
+  pulse: 'Rock crushes Scissors.',
+  hack: 'Scissors cut Paper.',
+  barrier: 'Paper covers Rock.',
 } as const satisfies Record<ClashMove, string>);
 
 export type ClashRng = Pick<SeededRng, 'shuffle'>;

@@ -36,7 +36,7 @@ export function BreakoutStage({
             <p>ACT 3</p>
             <h1>FINAL CLASH</h1>
             <strong>THREE MOVES. ONE POINT EVERY EXCHANGE.</strong>
-            <span>Pulse beats Hack · Hack beats Barrier · Barrier beats Pulse.</span>
+            <span>Rock beats Scissors · Scissors beat Paper · Paper beats Rock.</span>
           </section>
         );
       }

@@ -24,11 +24,11 @@ events: survive a collapsing floor, race to an exit, then face an opponent.
 
 Example with 48 entries: **48 → 24 → 12 → 4 → 1**.
 
-| Act | Audience question | Persistent state | Resolution unit |
-| --- | --- | --- | --- |
-| Faultline | Is our sector going down? | Sector membership during a wave | Half the field together |
-| Escape Run | Can my capsule catch the leaders? | Distance and occupied exit slots | Everyone moves on the same beat |
-| Final Clash | Can my finalist win the next exchange? | Matchup and score | Both opponents reveal together |
+| Act         | Audience question                      | Persistent state                 | Resolution unit                 |
+| ----------- | -------------------------------------- | -------------------------------- | ------------------------------- |
+| Faultline   | Is our sector going down?              | Sector membership during a wave  | Half the field together         |
+| Escape Run  | Can my capsule catch the leaders?      | Distance and occupied exit slots | Everyone moves on the same beat |
+| Final Clash | Can my finalist win the next exchange? | Matchup and score                | Both opponents reveal together  |
 
 The opening is intentionally a fast group cull. On its own, that would only be a
 larger draw. The race and scored duels are essential: they change what the
@@ -98,9 +98,9 @@ each other in a final. Every match is first to two points.
 
 There are three moves with one visible relationship each:
 
-- **Pulse** beats Hack.
-- **Hack** beats Barrier.
-- **Barrier** beats Pulse.
+- **Rock** beats Scissors.
+- **Scissors** beat Paper.
+- **Paper** beats Rock.
 
 For each exchange, shuffle these three moves and deal two distinct moves, one to
 each opponent. Both reveal together. Resolve the printed relationship and add
@@ -138,13 +138,13 @@ one legible state model. Qualification earns a place in the next act.
 
 Design targets, not measured runtimes:
 
-| Segment | Normal-speed target |
-| --- | --- |
-| Lock, capsule spill, locate names | 15–20 seconds |
-| Faultline, including both waves | 45–60 seconds |
-| Escape Run | 60–90 seconds |
-| Parallel semifinals and final | 90–120 seconds |
-| Transitions and winner | 20–30 seconds |
+| Segment                           | Normal-speed target |
+| --------------------------------- | ------------------- |
+| Lock, capsule spill, locate names | 15–20 seconds       |
+| Faultline, including both waves   | 45–60 seconds       |
+| Escape Run                        | 60–90 seconds       |
+| Parallel semifinals and final     | 90–120 seconds      |
+| Transitions and winner            | 20–30 seconds       |
 
 Total target: roughly **4–6 minutes**, excluding host pauses. Tune downward if
 reaction holds feel padded. Early beats affect many entrants; later beats spend

@@ -13,7 +13,7 @@ The semifinals give two small contests to follow at once; the championship narro
 
 ### Required audiovisual paragraph
 
-Bring the finalists into a quiet reactor core that resembles a small championship arena rather than the earlier machine floor or racecourse. The background picture shows two opposing capsule pedestals, a circular energy aperture, and restrained overhead spotlights; most of the picture remains dark so names, moves and score pips dominate. During semifinals, use two equal matchup panels with a shared countdown. During the final, merge the stage into one wide duel and enlarge both contestants symmetrically. Pulse uses a concentric energy-ring icon, Hack a broken-circuit key icon, and Barrier a faceted shield; each move has a different silhouette as well as a color. Animation centers on sealed move plates, a simultaneous flip, a short readable interaction between the two symbols, and one point traveling into the winning score. Sound becomes sparse: low reactor rhythm, matched charging tones, a short silence before reveal, a distinct interaction cue, and a clear point click. At match point the aperture narrows and the bed softens; at 2–2 the whole scene holds its breath for one final exchange. Release into warm light and a single fanfare only when the third point is earned. The feeling is intimate, anxious and conclusive, with every dramatic beat attached to an actual score condition.
+Bring the finalists into a quiet reactor core that resembles a small championship arena rather than the earlier machine floor or racecourse. The background picture shows two opposing capsule pedestals, a circular energy aperture, and restrained overhead spotlights; most of the picture remains dark so names, moves and score pips dominate. During semifinals, use two equal matchup panels with a shared countdown. During the final, merge the stage into one wide duel and enlarge both contestants symmetrically. Rock uses an angular stone icon, Scissors uses crossed blades with circular handles, and Paper uses a folded sheet; each move has a different silhouette as well as a color. Animation centers on sealed move plates, a simultaneous flip, a short readable interaction between the two symbols, and one point traveling into the winning score. Sound becomes sparse: low reactor rhythm, matched charging tones, a short silence before reveal, a distinct interaction cue, and a clear point click. At match point the aperture narrows and the bed softens; at 2–2 the whole scene holds its breath for one final exchange. Release into warm light and a single fanfare only when the third point is earned. The feeling is intimate, anxious and conclusive, with every dramatic beat attached to an actual score condition.
 
 ## 2. Input counts, brackets and fairness
 
@@ -48,7 +48,7 @@ const BEATS = {
 } as const;
 ```
 
-Visible labels are Pulse, Hack, Barrier. Show the relationship strip throughout the act: **“Pulse beats Hack · Hack beats Barrier · Barrier beats Pulse.”** This rule is all the audience needs to understand a point. There are no damage numbers, critical hits, elemental bonuses, extra cards, health bars, or tie rounds.
+The legacy internal keys map to the visible moves as `pulse → Rock`, `hack → Scissors`, and `barrier → Paper`; keeping those keys preserves deterministic replay compatibility. Visible labels are Rock, Scissors, Paper. Show the relationship strip throughout the act: **“Rock beats Scissors · Scissors beat Paper · Paper beats Rock.”** This rule is all the audience needs to understand a point. There are no damage numbers, critical hits, elemental bonuses, extra cards, health bars, or tie rounds.
 
 ### 3.2 Deal and resolve one exchange
 
@@ -61,14 +61,14 @@ Visible labels are Pulse, Hack, Barrier. Show the relationship strip throughout 
 
 All six ordered deals are equally likely under a uniform shuffle. Each seat wins three of the six. Both participants always receive distinct moves; explain this in the opening rule sentence rather than making viewers wonder why ties never occur.
 
-| Left / right    | Point winner | Visual explanation                  |
-| --------------- | ------------ | ----------------------------------- |
-| Pulse / Hack    | Left         | Pulse overloads Hack's circuit.     |
-| Hack / Pulse    | Right        | Pulse overloads Hack's circuit.     |
-| Hack / Barrier  | Left         | Hack opens the Barrier's lock.      |
-| Barrier / Hack  | Right        | Hack opens the Barrier's lock.      |
-| Barrier / Pulse | Left         | Barrier absorbs and reflects Pulse. |
-| Pulse / Barrier | Right        | Barrier absorbs and reflects Pulse. |
+| Left / right     | Point winner | Visual explanation     |
+| ---------------- | ------------ | ---------------------- |
+| Rock / Scissors  | Left         | Rock crushes Scissors. |
+| Scissors / Rock  | Right        | Rock crushes Scissors. |
+| Scissors / Paper | Left         | Scissors cut Paper.    |
+| Paper / Scissors | Right        | Scissors cut Paper.    |
+| Paper / Rock     | Left         | Paper covers Rock.     |
+| Rock / Paper     | Right        | Paper covers Rock.     |
 
 The relationship decides the point. Do not first choose the winner and then fabricate moves to justify it.
 
@@ -201,16 +201,16 @@ All entrance durations use the shared speed multiplier once. Their state changes
 
 ### 6.3 Semifinal/play-in exchange — 12,000 ms
 
-| Interval   | Required animation/copy                                                    | Sound                                                      |
-| ---------- | -------------------------------------------------------------------------- | ---------------------------------------------------------- |
-| 0–2000     | Current score, visible opponents, identical sealed plates; “MOVES LOCKED.” | Quiet reactor bed.                                         |
-| 2000–4000  | Symmetric energy charge; move art remains concealed.                       | One shared charge cue.                                     |
-| 4000–4800  | Central “REVEAL” indicator; reduce music to quarter gain in last 500 ms.   | No transient in last 500 ms.                               |
-| 4800–5400  | Both move plates flip together in each active match.                       | One shared plate-flip cue, not four overlapping flips.     |
-| 5400–7000  | Play the true Pulse/Hack/Barrier interaction; reveal relationship caption. | At most one interaction cue per active match.              |
-| 7000–7600  | Winning point token travels to score pip.                                  | Soft score-approach tone included in the point sound.      |
-| 7600       | Atomic score/status commit across both matches.                            | Point click; if match ends, a restrained advancement tone. |
-| 7600–12000 | Hold scores and actual match winners; completed panel stays still.         | Bed resumes at base gain.                                  |
+| Interval   | Required animation/copy                                                     | Sound                                                      |
+| ---------- | --------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 0–2000     | Current score, visible opponents, identical sealed plates; “MOVES LOCKED.”  | Quiet reactor bed.                                         |
+| 2000–4000  | Symmetric energy charge; move art remains concealed.                        | One shared charge cue.                                     |
+| 4000–4800  | Central “REVEAL” indicator; reduce music to quarter gain in last 500 ms.    | No transient in last 500 ms.                               |
+| 4800–5400  | Both move plates flip together in each active match.                        | One shared plate-flip cue, not four overlapping flips.     |
+| 5400–7000  | Play the true Rock/Scissors/Paper interaction; reveal relationship caption. | At most one interaction cue per active match.              |
+| 7000–7600  | Winning point token travels to score pip.                                   | Soft score-approach tone included in the point sound.      |
+| 7600       | Atomic score/status commit across both matches.                             | Point click; if match ends, a restrained advancement tone. |
+| 7600–12000 | Hold scores and actual match winners; completed panel stays still.          | Bed resumes at base gain.                                  |
 
 `resolutionBaseMs = 7600`. A settled match does not charge or flip during another semifinal's third exchange. If both semifinals finish together, both eliminations occur at the same offset. If only one finishes, the field count correctly drops by one and the other match continues.
 
@@ -241,9 +241,9 @@ For sole-entry `winner.declared`, `resolutionBaseMs = 0` and `durationBaseMs = 8
 
 ### 6.5 The three interaction animations
 
-- **Pulse defeats Hack:** from the Pulse plate, expand three thin rings toward the Hack glyph; the Hack circuit segments briefly disconnect; leave both labels visible; route the point token back to the Pulse owner.
-- **Hack defeats Barrier:** a small key-shaped circuit trace reaches the Barrier rim; three locks open in succession over 800 ms; the shield separates into two restrained panels; route the point to the Hack owner.
-- **Barrier defeats Pulse:** the Pulse ring touches a stationary shield plane and compresses; the shield emits one outward ripple; route the point to the Barrier owner. Do not make the Pulse user look like the scorer simply because their attack moved first.
+- **Rock defeats Scissors:** the rock moves through a short impact arc and the scissors recoil; leave both labels visible; route the point token back to the Rock owner.
+- **Scissors defeat Paper:** the crossed blades close once through the edge of the paper; the sheet separates along one restrained cut; route the point to the Scissors owner.
+- **Paper defeats Rock:** the sheet wraps around the rock silhouette and settles; route the point to the Paper owner. Do not make the Rock user look like the scorer simply because their icon moved first.
 
 Mirror these animations for left/right seats without changing who wins. Use matched timing and effect scale across moves; no move has a hidden presentation advantage. Decorative shake is capped at 4 logical px and applied to the central effect only, never names or the score.
 
@@ -257,9 +257,9 @@ Extend `scripts/build-breakout-media.mjs` and the explicit asset manifest from A
 | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `bg_final_clash` / `bg_final_clash.svg`                   | Dark reactor-core arena, centered aperture and symmetric opposing pedestal outlines. Base `#0B0C19`, slate `#282A45`, cool rim light `#8B9BDF`, warm victory accent `#EDC46B`. Empty name/score regions. No prepainted winner, words or crowd faces. |
 | `img_clash_plate` / `img_clash_plate.svg`                 | Identical sealed metallic move plate; no motif that discloses the concealed move.                                                                                                                                                                    |
-| `icon_pulse` / `icon_pulse.svg`                           | Three concentric rings with a small center, amber `#F2BE65`; visible Pulse label supplied by UI.                                                                                                                                                     |
-| `icon_hack` / `icon_hack.svg`                             | Circuit key with three square terminals, cyan `#65DDE1`; distinct from the shield silhouette.                                                                                                                                                        |
-| `icon_barrier` / `icon_barrier.svg`                       | Broad faceted shield with a centered vertical seam, violet `#AE9BE8`.                                                                                                                                                                                |
+| `icon_rock` / `icon_rock.svg`                             | Angular faceted rock, amber `#F2BE65`; visible Rock label supplied by UI.                                                                                                                                                                            |
+| `icon_scissors` / `icon_scissors.svg`                     | Crossed blades with two circular handles, cyan `#65DDE1`; visible Scissors label supplied by UI.                                                                                                                                                     |
+| `icon_paper` / `icon_paper.svg`                           | Folded sheet with three horizontal lines, violet `#AE9BE8`; visible Paper label supplied by UI.                                                                                                                                                      |
 | `icon_championship_point` / `icon_championship_point.svg` | Single outlined crown-point spark; pair with explicit championship-point text.                                                                                                                                                                       |
 | `fx_clash_aperture` / `fx_clash_aperture.svg`             | Transparent radial aperture segments; intensity controlled by current score, not future outcome.                                                                                                                                                     |
 | `fx_clash_victory` / `fx_clash_victory.svg`               | Restrained warm rays behind the winning capsule only after resolution. Existing confetti may be reused if its colors match.                                                                                                                          |
@@ -287,7 +287,7 @@ Fallback background is a CSS navy radial gradient; move icons fall back to label
 4. **Implement final score reset and terminal winner event.** The decisive exchange belongs only to `winner.declared`. Set exactly one winner at its resolution; do not emit a duplicate score/winner event afterward.
 5. **Extend the timeline builder.** Add route-specific entrance events, shared semifinal timing, score-triggered championship holds, the decisive-exchange celebration and the sole-entry path. All timing formulas are in section 6.
 6. **Create `src/presentation/breakout/FinalClashStage.tsx` and `.module.css`.** Add stable names, capsule portraits, sealed plates, numeric/pip scores, move relationship strip, bye display and simultaneous reveal. Hide future result fields from the rendered view model.
-7. **Implement the three interaction animations.** Mirror by seat and route the point to the correct owner. Check Barrier-winning cases specifically. Drive every stage from the shared elapsed clock.
+7. **Implement the three interaction animations.** Mirror by seat and route the point to the correct owner. Check Paper-winning cases specifically. Drive every stage from the shared elapsed clock.
 8. **Implement championship-point and Last Spark states.** Derive them solely from the before score. They alter framing/hold duration, never a move deal or point rule.
 9. **Generate and register Act 3 assets.** Add the required SVGs/WAVs and their fallbacks to the shared generator, manifest and cue scheduler. Preload the mandatory final art while the earlier acts play, without revealing outcomes.
 10. **Connect the official winner UI.** Reuse the existing `WinnerScreen` only after adapting it to the decisive-exchange event. Display winner name/ticket, final score or sole-entry reason, locked commitment, revealed seed, Verify and Download audit JSON. No reroll button.

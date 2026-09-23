@@ -1,4 +1,4 @@
-/** Deterministic Act 1 vector art and 48 kHz stereo PCM. No borrowed media. */
+/** Deterministic Breakout vector art and 48 kHz stereo PCM. No borrowed media. */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
@@ -62,6 +62,61 @@ await save(
     256,
     256,
     '<path d="M46 128a82 82 0 0 1 135-63" fill="none" stroke="#F1C76C" stroke-width="18" stroke-linecap="round"/><path d="m172 28 50 61-78 11Z" fill="#F1C76C"/><path d="M210 128a82 82 0 0 1-135 63" fill="none" stroke="#50D8E8" stroke-width="18" stroke-linecap="round"/><path d="m84 228-50-61 78-11Z" fill="#50D8E8"/>',
+  ),
+);
+
+await save(
+  'bg_escape_run.svg',
+  svg(
+    1920,
+    1080,
+    `<rect width="1920" height="1080" fill="#081725"/><path d="M0 0h1920v132H0zM0 916h1920v164H0z" fill="#041019"/><path d="M64 160h1432v744H64z" fill="url(#conduit)"/><g stroke="#4F7380" stroke-opacity=".18" stroke-width="4">${Array.from({ length: 17 }, (_, index) => `<path d="M${100 + index * 84} 164v736"/>`).join('')}</g><path d="M104 188h1360M104 878h1360" stroke="#65DDE1" stroke-opacity=".22" stroke-width="6"/><g opacity=".5"><path d="M0 180h58v700H0" fill="#512B2F"/><path d="M18 230h28v82H18m0 48h28v82H18m0 48h28v82H18m0 48h28v82H18m0 48h28v82H18" fill="#A85B57" opacity=".34"/><path d="M1508 150h412v766h-412" fill="#163844"/><path d="M1560 210h300v118h-300m0 62h300v118h-300m0 62h300v118h-300m0 62h300v118h-300" fill="#224E5B" stroke="#F1C76C" stroke-opacity=".22" stroke-width="4"/></g><path d="M328 160v744M1496 160v744" stroke="#F1C76C" stroke-opacity=".34" stroke-width="5" stroke-dasharray="14 16"/>`,
+    '<linearGradient id="conduit" x2="1"><stop stop-color="#1F2C35"/><stop offset=".24" stop-color="#10242E"/><stop offset=".76" stop-color="#12313A"/><stop offset="1" stop-color="#224E5B"/></linearGradient>',
+  ),
+);
+
+await save(
+  'img_exit_gate.svg',
+  svg(
+    512,
+    512,
+    '<path d="M82 456V92q0-38 38-38h272q38 0 38 38v364h-58V118H140v338Z" fill="#224E5B" stroke="#F1C76C" stroke-width="12"/><path d="M140 118h232v338H140Z" fill="#07131C" stroke="#65DDE1" stroke-opacity=".55" stroke-width="8"/><path d="M168 150v274M344 150v274M168 286h176" stroke="#547681" stroke-width="10"/><path d="m112 82 24 24m240-24-24 24" stroke="#F1C76C" stroke-width="12"/>',
+  ),
+);
+
+await save(
+  'fx_capsule_exhaust.svg',
+  svg(
+    512,
+    512,
+    '<defs><linearGradient id="trail" x2="1"><stop stop-color="#65DDE1" stop-opacity="0"/><stop offset="1" stop-color="#F1C76C" stop-opacity=".85"/></linearGradient></defs><path d="M20 196h390l76 60-76 60H20l112-60Z" fill="url(#trail)"/><path d="M60 160h310l72 42H60M60 352h310l72-42H60" fill="none" stroke="#65DDE1" stroke-opacity=".52" stroke-width="14"/>',
+  ),
+);
+
+await save(
+  'icon_exit.svg',
+  svg(
+    256,
+    256,
+    '<path d="M36 28h116v200H36Z" fill="none" stroke="#65DDE1" stroke-width="16"/><path d="M92 128h132m-42-42 42 42-42 42" fill="none" stroke="#F1C76C" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>',
+  ),
+);
+
+await save(
+  'icon_burst.svg',
+  svg(
+    256,
+    256,
+    '<path d="M28 74h118M10 128h168M28 182h118" stroke="#F1C76C" stroke-width="20" stroke-linecap="round"/><path d="m145 42 82 86-82 86" fill="none" stroke="#65DDE1" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>',
+  ),
+);
+
+await save(
+  'icon_photo_finish.svg',
+  svg(
+    256,
+    256,
+    '<path d="M28 76h200v138H28Z" fill="#16313B" stroke="#F1C76C" stroke-width="14"/><path d="M72 76 94 42h68l22 34" fill="#224E5B" stroke="#F1C76C" stroke-width="14"/><circle cx="128" cy="145" r="46" fill="#07131C" stroke="#65DDE1" stroke-width="14"/><path d="M197 106h18" stroke="#EDC46B" stroke-width="12"/>',
   ),
 );
 
@@ -169,10 +224,56 @@ const cues = {
       gain: index % 4 === 0 ? 0.24 : 0.13,
     })),
   ],
+  sfx_race_charge: [
+    1.5,
+    [
+      { hz: 78, to: 224, length: 1.45, gain: 0.28, sustain: true },
+      { hz: 156, to: 448, length: 1.4, gain: 0.12, sustain: true },
+    ],
+  ],
+  sfx_race_launch: [
+    0.8,
+    [
+      { hz: 210, to: 74, length: 0.76, gain: 0.38, noise: 0.24 },
+      { hz: 760, to: 210, length: 0.22, gain: 0.28 },
+    ],
+  ],
+  sfx_exit_lock: [
+    0.9,
+    [
+      { hz: 392, length: 0.6, gain: 0.24 },
+      { at: 0.1, hz: 523, length: 0.65, gain: 0.22 },
+      { at: 0.2, hz: 659, length: 0.65, gain: 0.18 },
+    ],
+  ],
+  sfx_photo_finish: [
+    0.25,
+    [
+      { hz: 1400, to: 280, length: 0.08, gain: 0.5, noise: 0.34 },
+      { at: 0.09, hz: 860, to: 180, length: 0.14, gain: 0.26 },
+    ],
+  ],
+  amb_escape_run: [
+    10,
+    [
+      { hz: 54, length: 10, gain: 0.09, sustain: true },
+      { hz: 108, length: 10, gain: 0.05, noise: 0.12, sustain: true },
+    ],
+  ],
+  music_escape_run: [
+    10,
+    Array.from({ length: 16 }, (_, index) => ({
+      at: index * 0.625,
+      hz: index % 4 === 0 ? 146 : 110,
+      to: 78,
+      length: 0.42,
+      gain: index % 4 === 0 ? 0.2 : 0.11,
+    })),
+  ],
 };
 
 for (const [name, [duration, voices]] of Object.entries(cues)) {
   await save(`${name}.wav`, createWave(duration, voices));
 }
 
-console.log(`Built ${5 + Object.keys(cues).length} deterministic Faultline assets in ${output}`);
+console.log(`Built ${11 + Object.keys(cues).length} deterministic Breakout assets in ${output}`);

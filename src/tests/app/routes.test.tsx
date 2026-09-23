@@ -26,8 +26,19 @@ describe('application routes', () => {
   it('renders the isolated Faultline development fixture', () => {
     renderRoute('/dev/breakout/faultline');
 
-    expect(screen.getByRole('main', { name: /faultline development fixture/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('main', { name: /faultline development fixture/i }),
+    ).toBeInTheDocument();
     expect(screen.getByText('TWO SECTORS WILL FALL.')).toBeInTheDocument();
+  });
+
+  it('renders the isolated Escape Run development fixture', () => {
+    renderRoute('/dev/breakout/escape-run');
+
+    expect(
+      screen.getByRole('main', { name: /escape run development fixture/i }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/EVERYONE MOVES TOGETHER/u)).toBeInTheDocument();
   });
 
   it('redirects the root route to setup', async () => {

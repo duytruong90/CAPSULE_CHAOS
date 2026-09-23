@@ -6,7 +6,11 @@ import {
   type BreakoutEngineEvent,
   type BreakoutSnapshot,
 } from './types';
-import { buildFaultlineCueSheet, type BreakoutCue } from '../../presentation/breakout/cueSheet';
+import {
+  buildEscapeRunCueSheet,
+  buildFaultlineCueSheet,
+  type BreakoutCue,
+} from '../../presentation/breakout/cueSheet';
 
 export interface BreakoutTimelineEvent {
   readonly id: string;
@@ -27,7 +31,9 @@ export interface BreakoutTimeline {
   readonly events: readonly BreakoutTimelineEvent[];
 }
 
-export function getFaultlineTiming(event: Extract<BreakoutEngineEvent, { type: 'faultline.wave-resolved' }>) {
+export function getFaultlineTiming(
+  event: Extract<BreakoutEngineEvent, { type: 'faultline.wave-resolved' }>,
+) {
   const maxSectorPageCount = Math.max(
     ...event.payload.wave.sectorsBefore.map((sector) =>
       Math.max(1, Math.ceil(sector.length / FAULTLINE_NAMES_PER_PAGE)),
@@ -60,7 +66,32 @@ export function getFaultlineTiming(event: Extract<BreakoutEngineEvent, { type: '
   });
 }
 
-export function buildFaultlineTimeline(events: readonly BreakoutEngineEvent[]): BreakoutTimeline {
+export function getRaceBeatTiming(
+  event: Extract<BreakoutEngineEvent, { type: 'race.beat-resolved' }>,
+) {
+  const movementDuration = event.payload.beat.raceComplete ? 8_000 : 5_000;
+  const photoDuration = event.payload.beat.cutoffTieIds.length > 0 ? 4_000 : 0;
+  const movementReveal = 2_000;
+  const movementStart = 2_800;
+  const motionEnd = movementStart + movementDuration;
+  const photoReveal = motionEnd + (photoDuration === 0 ? 0 : 2_000);
+  const resolution = motionEnd + photoDuration;
+  const resultEnd = resolution + 4_500;
+  const duration = resolution + 5_000;
+
+  return Object.freeze({
+    movementReveal,
+    movementStart,
+    movementDuration,
+    motionEnd,
+    photoReveal,
+    resolution,
+    resultEnd,
+    duration,
+  });
+}
+
+export function buildBreakoutTimeline(events: readonly BreakoutEngineEvent[]): BreakoutTimeline {
   const timelineEvents = events.flatMap((engineEvent): BreakoutTimelineEvent[] => {
     let durationBaseMs: number;
     let resolutionBaseMs: number | null = null;
@@ -73,8 +104,23 @@ export function buildFaultlineTimeline(events: readonly BreakoutEngineEvent[]): 
         segments = Object.freeze({ lock: 0, complete: 8_000 });
         break;
       case 'act.started':
-        durationBaseMs = 8_000;
-        segments = Object.freeze({ roomReveal: 0, rules: 2_500, capsuleSpill: 5_000, complete: 8_000 });
+        if (engineEvent.payload.actId === 'act-2') {
+          durationBaseMs = 10_000;
+          segments = Object.freeze({
+            conduitReveal: 0,
+            rules: 2_500,
+            startingGrid: 6_000,
+            complete: 10_000,
+          });
+        } else {
+          durationBaseMs = 8_000;
+          segments = Object.freeze({
+            roomReveal: 0,
+            rules: 2_500,
+            capsuleSpill: 5_000,
+            complete: 8_000,
+          });
+        }
         break;
       case 'act.skipped':
         return [];
@@ -94,12 +140,32 @@ export function buildFaultlineTimeline(events: readonly BreakoutEngineEvent[]): 
         });
         break;
       }
+      case 'race.beat-resolved': {
+        const timing = getRaceBeatTiming(engineEvent);
+        durationBaseMs = timing.duration;
+        resolutionBaseMs = timing.resolution;
+        segments = Object.freeze({ ...timing });
+        cues = buildEscapeRunCueSheet({
+          movementReveal: timing.movementReveal,
+          movementStart: timing.movementStart,
+          motionEnd: timing.motionEnd,
+          resolution: timing.resolution,
+          hasCutoffTie: engineEvent.payload.beat.cutoffTieIds.length > 0,
+          hasQualifications: engineEvent.payload.beat.newlyQualified.length > 0,
+        });
+        break;
+      }
       case 'act.completed':
-        durationBaseMs = 6_000;
-        segments = Object.freeze({ lineup: 0, objective: 3_000, complete: 6_000 });
+        if (engineEvent.payload.actId === 'act-2') {
+          durationBaseMs = 7_000;
+          segments = Object.freeze({ gatesLock: 0, lineup: 2_000, complete: 7_000 });
+        } else {
+          durationBaseMs = 6_000;
+          segments = Object.freeze({ lineup: 0, objective: 3_000, complete: 6_000 });
+        }
         break;
       default:
-        throw new Error(`Act 1 timeline cannot render ${engineEvent.type}.`);
+        throw new Error(`Breakout timeline cannot render ${engineEvent.type}.`);
     }
 
     return [
@@ -124,6 +190,8 @@ export function buildFaultlineTimeline(events: readonly BreakoutEngineEvent[]): 
     events: Object.freeze(timelineEvents),
   });
 }
+
+export const buildFaultlineTimeline = buildBreakoutTimeline;
 
 export function serializeBreakoutTimeline(timeline: BreakoutTimeline) {
   return canonicalStringify(timeline);

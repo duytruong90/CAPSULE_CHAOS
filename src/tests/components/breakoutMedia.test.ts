@@ -21,6 +21,18 @@ describe('Faultline media pack', () => {
       'sfx_sector_safe',
       'amb_faultline',
       'music_faultline',
+      'bg_escape_run',
+      'img_exit_gate',
+      'fx_capsule_exhaust',
+      'icon_exit',
+      'icon_burst',
+      'icon_photo_finish',
+      'sfx_race_charge',
+      'sfx_race_launch',
+      'sfx_exit_lock',
+      'sfx_photo_finish',
+      'amb_escape_run',
+      'music_escape_run',
     ]);
     assets.forEach((asset) => {
       expect(asset.src).toBe(

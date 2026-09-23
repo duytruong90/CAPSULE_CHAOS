@@ -86,7 +86,19 @@ export type AssetId =
   | 'sfx_floor_collapse'
   | 'sfx_sector_safe'
   | 'amb_faultline'
-  | 'music_faultline';
+  | 'music_faultline'
+  | 'bg_escape_run'
+  | 'img_exit_gate'
+  | 'fx_capsule_exhaust'
+  | 'icon_exit'
+  | 'icon_burst'
+  | 'icon_photo_finish'
+  | 'sfx_race_charge'
+  | 'sfx_race_launch'
+  | 'sfx_exit_lock'
+  | 'sfx_photo_finish'
+  | 'amb_escape_run'
+  | 'music_escape_run';
 
 export interface AssetDefinition {
   id: AssetId;
@@ -234,6 +246,18 @@ const definitions: AssetDefinition[] = [
   breakoutAsset('sfx_sector_safe', 'audio', 'wav'),
   breakoutAsset('amb_faultline', 'audio', 'wav'),
   breakoutAsset('music_faultline', 'audio', 'wav'),
+  breakoutAsset('bg_escape_run', 'image', 'svg', true),
+  breakoutAsset('img_exit_gate', 'image', 'svg'),
+  breakoutAsset('fx_capsule_exhaust', 'image', 'svg'),
+  breakoutAsset('icon_exit', 'image', 'svg'),
+  breakoutAsset('icon_burst', 'image', 'svg'),
+  breakoutAsset('icon_photo_finish', 'image', 'svg'),
+  breakoutAsset('sfx_race_charge', 'audio', 'wav'),
+  breakoutAsset('sfx_race_launch', 'audio', 'wav'),
+  breakoutAsset('sfx_exit_lock', 'audio', 'wav'),
+  breakoutAsset('sfx_photo_finish', 'audio', 'wav'),
+  breakoutAsset('amb_escape_run', 'audio', 'wav'),
+  breakoutAsset('music_escape_run', 'audio', 'wav'),
 ];
 
 export const assetManifest: Readonly<Record<AssetId, Readonly<AssetDefinition>>> = Object.freeze(

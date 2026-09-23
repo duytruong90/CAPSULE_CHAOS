@@ -99,6 +99,13 @@ export interface RaceViewState {
   readonly complete: boolean;
 }
 
+export interface EscapeRunResult {
+  readonly qualifierIds: readonly string[];
+  readonly movementDecksById: Readonly<Record<string, readonly (1 | 2 | 3)[]>>;
+  readonly photoPriorityIds: readonly string[];
+  readonly beats: readonly RaceBeat[];
+}
+
 export type ClashMove = 'pulse' | 'hack' | 'barrier';
 export type MatchId = 'sf1' | 'sf2' | 'playin' | 'final';
 
@@ -204,6 +211,11 @@ export type BreakoutRandomStreamLabel =
 export type BreakoutRandomSeeds = Readonly<Record<BreakoutRandomStreamLabel, string>>;
 
 export interface FaultlineActResult extends FaultlineResult {
+  readonly entries: readonly BreakoutEntry[];
+  readonly events: readonly BreakoutEngineEvent[];
+}
+
+export interface EscapeRunActResult extends EscapeRunResult {
   readonly entries: readonly BreakoutEntry[];
   readonly events: readonly BreakoutEngineEvent[];
 }

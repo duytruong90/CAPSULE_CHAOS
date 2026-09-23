@@ -51,8 +51,21 @@
     #07111e;
 }
 
+.escapeRunIntro {
+  background:
+    linear-gradient(rgba(3, 10, 16, 0.25), rgba(3, 10, 16, 0.72)),
+    url('/assets/breakout/bg_escape_run.svg') center/cover,
+    #081725;
+}
+
 .completion {
   background: radial-gradient(circle at 50% 45%, rgba(80, 216, 232, 0.2), transparent 34%), #07111e;
+}
+
+.raceCompletion {
+  background:
+    radial-gradient(circle at 72% 48%, rgba(101, 221, 225, 0.22), transparent 30%),
+    linear-gradient(90deg, #081725, #153945);
 }
 
 .nameList {

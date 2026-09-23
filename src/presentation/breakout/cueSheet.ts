@@ -12,7 +12,14 @@ export type BreakoutCueId =
   | 'faultline.lock-1'
   | 'faultline.lock-2'
   | 'faultline.collapse'
-  | 'faultline.safe';
+  | 'faultline.safe'
+  | 'race.ambience'
+  | 'race.music'
+  | 'race.charge'
+  | 'race.ignition'
+  | 'race.launch'
+  | 'race.photo-finish'
+  | 'race.exit-lock';
 
 export interface BreakoutCue {
   readonly cueId: BreakoutCueId;
@@ -51,6 +58,30 @@ export function buildFaultlineCueSheet(offsets: {
   ];
   if (offsets.hasConveyor) {
     cues.push({ cueId: 'faultline.conveyor', offsetBaseMs: offsets.shiftStart, bus: 'transient' });
+  }
+  return Object.freeze(cues.sort((left, right) => left.offsetBaseMs - right.offsetBaseMs));
+}
+
+export function buildEscapeRunCueSheet(offsets: {
+  movementReveal: number;
+  movementStart: number;
+  motionEnd: number;
+  resolution: number;
+  hasCutoffTie: boolean;
+  hasQualifications: boolean;
+}): readonly BreakoutCue[] {
+  const cues: BreakoutCue[] = [
+    { cueId: 'race.ambience', offsetBaseMs: 0, bus: 'ambience' },
+    { cueId: 'race.music', offsetBaseMs: 0, bus: 'music' },
+    { cueId: 'race.charge', offsetBaseMs: 0, bus: 'transient' },
+    { cueId: 'race.ignition', offsetBaseMs: offsets.movementReveal, bus: 'transient' },
+    { cueId: 'race.launch', offsetBaseMs: offsets.movementStart, bus: 'transient' },
+  ];
+  if (offsets.hasCutoffTie) {
+    cues.push({ cueId: 'race.photo-finish', offsetBaseMs: offsets.motionEnd, bus: 'transient' });
+  }
+  if (offsets.hasQualifications) {
+    cues.push({ cueId: 'race.exit-lock', offsetBaseMs: offsets.resolution, bus: 'transient' });
   }
   return Object.freeze(cues.sort((left, right) => left.offsetBaseMs - right.offsetBaseMs));
 }

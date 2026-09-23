@@ -84,7 +84,13 @@
 .show[data-phase='phase-2'] .presentation,
 .show[data-phase='phase-3'] .presentation {
   box-sizing: border-box;
+  align-self: stretch;
+  height: 100%;
   padding-top: 220px;
+}
+.show[data-phase='phase-2'] .presentation > *,
+.show[data-phase='phase-3'] .presentation > * {
+  min-height: 0;
 }
 .show[data-phase='phase-3'] .machine {
   transform: scale(1.08);

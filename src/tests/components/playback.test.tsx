@@ -97,6 +97,22 @@ describe('timeline playback', () => {
     expect(playback.getSnapshot()).toMatchObject({ stage: 'boundary', remaining: 20 });
     reconnect();
   });
+  it('recovers during a final fake-out and preserves the locked official winner', () => {
+    const config = { ...DEFAULT_SETUP_CONFIG, autoAdvancePhases: true };
+    const playback = new PlaybackController(session.timeline, config, 50);
+    const disconnect = playback.connect();
+    while (playback.event?.type !== 'fake-winner') vi.advanceTimersToNextTimer();
+    vi.advanceTimersByTime(Math.floor(playback.duration / 2));
+    disconnect();
+    const snapshot = playback.getSnapshot();
+    const recovered = new PlaybackController(session.timeline, config, 50, snapshot);
+    const disconnectRecovered = recovered.connect();
+    vi.runAllTimers();
+    expect(recovered.getSnapshot()).toMatchObject({ stage: 'complete', remaining: 1 });
+    expect(recovered.event?.type).toBe('winner');
+    expect(session.timeline.winnerId).toBe(session.simulation.winnerId);
+    disconnectRecovered();
+  });
   it('renders the UI boundary, count and controls without exposing seed or winner', () => {
     const playback = new PlaybackController(session.timeline, DEFAULT_SETUP_CONFIG, 50);
     const view = render(<GameShow session={session} playback={playback} title="Test giveaway" />);

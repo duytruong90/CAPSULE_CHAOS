@@ -4,7 +4,7 @@ import { PRNG_ALGORITHM } from './rng';
 import { ENGINE_RULES_VERSION } from '../state/gameTypes';
 import { generateSecureSeed, normalizeSeed, type RandomValuesSource } from './seed';
 
-export const LOCK_SCHEMA_VERSION = 'capsule-chaos-lock-v2' as const;
+export const LOCK_SCHEMA_VERSION = 'capsule-chaos-lock-v3' as const;
 
 export interface LockedEntry {
   id: string;

@@ -34,15 +34,19 @@ export class PlaybackController {
     readonly timeline: GameTimeline,
     readonly config: Readonly<SetupConfig>,
     readonly entryCount: number,
+    initialSnapshot?: PlaybackSnapshot,
   ) {
-    this.snapshot = {
-      index: -1,
-      stage: 'intro',
-      settled: false,
-      paused: false,
-      remaining: entryCount,
-      elapsedMs: 0,
-    };
+    this.snapshot = initialSnapshot
+      ? { ...initialSnapshot }
+      : {
+          index: -1,
+          stage: 'intro',
+          settled: false,
+          paused: false,
+          remaining: entryCount,
+          elapsedMs: 0,
+        };
+    this.started = Boolean(initialSnapshot);
   }
   getSnapshot = () => this.snapshot;
   subscribe = (listener: () => void) => {
@@ -88,6 +92,13 @@ export class PlaybackController {
       this.schedule(this.duration, this.complete);
     } else if (this.pending) {
       this.schedule(this.pendingMs, this.pending);
+    } else if (
+      !this.snapshot.settled &&
+      (this.snapshot.stage === 'intro' || this.snapshot.stage === 'event')
+    ) {
+      this.schedule(Math.max(0, this.duration - this.snapshot.elapsedMs), this.complete);
+    } else if (this.snapshot.settled && this.snapshot.stage === 'event' && !this.snapshot.paused) {
+      this.schedule(SKIP_HOLD_DURATION, this.advance);
     }
     return () => {
       this.connected = false;
@@ -109,6 +120,7 @@ export class PlaybackController {
       cue = `result.${event.type}` as AudioCue;
     else if (!end && event.type === 'final-chamber') cue = 'final.heartbeat';
     else if (!end && event.type === 'fake-winner') cue = 'final.glitch';
+    else if (!end && event.type === 'winner') cue = 'final.winner';
     const key = `${event.id}:${end}`;
     if (cue && !this.cued.has(key)) {
       this.cued.add(key);

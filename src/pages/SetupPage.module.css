@@ -19,6 +19,38 @@
   height: calc(1080px - 116px);
   padding: 30px 70px 38px;
 }
+.recovery {
+  position: absolute;
+  z-index: 10;
+  top: 96px;
+  right: 70px;
+  left: 70px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 14px 18px;
+  border: 1px solid #8ce9ca55;
+  border-radius: 14px;
+  background: #0b201bee;
+  box-shadow: 0 12px 40px #0008;
+}
+.recovery div {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+}
+.recovery strong {
+  color: #9cf2d4;
+  font-size: 17px;
+}
+.recovery span {
+  color: #a8bbb5;
+  font-size: 12px;
+}
+.recovery button {
+  border: 0;
+  cursor: pointer;
+}
 
 .introRow {
   display: flex;
@@ -352,7 +384,7 @@
 
 .toggleGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 8px;
   margin-top: 2px;
 }

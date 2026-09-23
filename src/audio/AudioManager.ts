@@ -8,6 +8,7 @@ export type AudioCue =
   | 'result.revival'
   | 'final.heartbeat'
   | 'final.glitch'
+  | 'final.winner'
   | `card.${CardRarity}.charge`
   | `card.${CardRarity}.impact`;
 export interface AudioCueEvent {
@@ -18,6 +19,8 @@ export interface AudioCueEvent {
 /** Asset adapters may subscribe here. Missing audio never gates visual completion. */
 export class AudioManager {
   private listeners = new Set<(event: AudioCueEvent) => void>();
+  private muteListeners = new Set<() => void>();
+  private muted = false;
   subscribe(listener: (event: AudioCueEvent) => void) {
     this.listeners.add(listener);
     return () => {
@@ -25,7 +28,7 @@ export class AudioManager {
     };
   }
   cue(event: AudioCueEvent, enabled: boolean) {
-    if (!enabled) return;
+    if (!enabled || this.muted) return;
     for (const listener of this.listeners) {
       try {
         listener(event);
@@ -33,6 +36,19 @@ export class AudioManager {
         /* Sound failure must not interrupt the show. */
       }
     }
+  }
+  isMuted = () => this.muted;
+  subscribeMute = (listener: () => void) => {
+    this.muteListeners.add(listener);
+    return () => this.muteListeners.delete(listener);
+  };
+  setMuted(muted: boolean) {
+    if (this.muted === muted) return;
+    this.muted = muted;
+    this.muteListeners.forEach((listener) => listener());
+  }
+  toggleMuted() {
+    this.setMuted(!this.muted);
   }
 }
 

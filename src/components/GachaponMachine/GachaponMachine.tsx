@@ -1,6 +1,7 @@
 import type { CSSProperties } from 'react';
 import { Capsule } from '../Capsule/Capsule';
 import styles from './GachaponMachine.module.css';
+import { AssetImage } from '../AssetMedia/AssetImage';
 
 export function GachaponMachine({ spinning = false }: { spinning?: boolean }) {
   return (
@@ -10,6 +11,9 @@ export function GachaponMachine({ spinning = false }: { spinning?: boolean }) {
       aria-label="Gachapon machine"
       role="img"
     >
+      <AssetImage className={styles.assetLayer} assetId="gachapon_base" alt="" />
+      <AssetImage className={styles.assetLayer} assetId="gachapon_glass" alt="" />
+      <AssetImage className={styles.assetLayer} assetId="gachapon_chute" alt="" />
       <div className={styles.cap}>CAPSULE CHAOS</div>
       <div className={styles.bowl}>
         <div className={styles.swirl}>

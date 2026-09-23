@@ -1,6 +1,17 @@
 .show {
   padding: 24px 76px 30px;
 }
+.show[data-show-mode='true'] {
+  position: absolute;
+  z-index: 30;
+  inset: 0;
+  box-sizing: border-box;
+  background: #07050b;
+  user-select: none;
+}
+.show[data-cursor-hidden='true'] {
+  cursor: none;
+}
 .hud {
   display: flex;
   align-items: center;
@@ -44,6 +55,7 @@
   align-items: center;
   gap: 50px;
   height: 700px;
+  contain: layout paint;
 }
 .show[data-phase='phase-3'] .arena {
   background: radial-gradient(circle at 38% 48%, #3f244e 0, #0a0711 58%);
@@ -72,11 +84,13 @@
   display: grid;
   place-items: center;
   padding-top: 30px;
+  contain: layout paint;
 }
 .presentation {
   display: grid;
   place-items: center;
   min-width: 0;
+  contain: layout paint;
 }
 .presentation *,
 .machine * {
@@ -144,4 +158,69 @@
   opacity: 0.3;
   cursor: default;
   filter: none;
+}
+.resetButton {
+  border: 1px solid #ff7f9638;
+  color: #ca8793;
+  background: transparent;
+}
+.resetDialog {
+  position: absolute;
+  z-index: 50;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: #030207dd;
+}
+.resetDialog > div {
+  width: 520px;
+  padding: 34px;
+  border: 1px solid #ff8da855;
+  border-radius: 18px;
+  background: #170d15;
+  box-shadow: 0 25px 80px #000;
+}
+.resetDialog h3 {
+  margin: 0;
+  font-size: 26px;
+}
+.resetDialog p {
+  color: #c3aeb7;
+  line-height: 1.5;
+}
+.resetDialog input {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ffffff22;
+  border-radius: 8px;
+  color: white;
+  background: #050305;
+  font: 700 18px monospace;
+}
+.resetDialog > div > div {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 18px;
+}
+.resetDialog button {
+  border: 0;
+  cursor: pointer;
+}
+.resetDialog button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+.show[data-reduced-motion='true'] *,
+.show[data-reduced-motion='true'] *::before,
+.show[data-reduced-motion='true'] *::after {
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 1ms !important;
+}
+@media (max-aspect-ratio: 4 / 3) {
+  .title {
+    font-size: 18px;
+  }
 }

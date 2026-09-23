@@ -1,0 +1,69 @@
+.audit {
+  position: absolute;
+  z-index: 8;
+  right: 22px;
+  bottom: 18px;
+  left: 22px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 15px 18px;
+  border: 1px solid #ffe08a55;
+  border-radius: 15px;
+  background: #08060df2;
+  box-shadow: 0 15px 45px #000a;
+}
+.status,
+.seed {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.status span,
+.seed span {
+  color: #bdb2c8;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.11em;
+}
+.status[data-verified='true'] span {
+  color: #8ff0ce;
+}
+.status code,
+.seed code {
+  overflow: hidden;
+  color: #f0d9ff;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+}
+.actions button {
+  border: 0;
+  cursor: pointer;
+  font-size: 12px;
+}
+.audit > p {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #d4c4df;
+  font-size: 12px;
+}
+.audit textarea {
+  grid-column: 1 / -1;
+  width: 100%;
+  height: 220px;
+  padding: 12px;
+  resize: none;
+  border: 1px solid #ffffff20;
+  border-radius: 9px;
+  color: #ddd0e8;
+  background: #030205;
+  font:
+    11px/1.45 ui-monospace,
+    monospace;
+}

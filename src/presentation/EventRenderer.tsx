@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import type { TimelineEvent } from '../game/timeline/eventTypes';
 import type { LockedEntry } from '../game/engine/commitment';
 import { Capsule } from '../components/Capsule/Capsule';
@@ -13,8 +14,11 @@ interface EventRendererProps {
 }
 
 export function EventRenderer({ event, entries, settled, durationMs }: EventRendererProps) {
-  const nameFor = (id: string) =>
-    entries.find((entry) => entry.id === id)?.displayName ?? 'Unknown player';
+  const names = useMemo(
+    () => new Map(entries.map((entry) => [entry.id, entry.displayName])),
+    [entries],
+  );
+  const nameFor = (id: string) => names.get(id) ?? 'Unknown player';
   const name = nameFor(event.participants[0] ?? '');
   switch (event.type) {
     case 'capsule-spin':

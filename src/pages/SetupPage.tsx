@@ -20,7 +20,11 @@ const fakeoutOptions: ReadonlyArray<{ value: FakeoutIntensity; label: string }> 
 ];
 
 type BooleanSetupConfigKey =
-  'soundEnabled' | 'autoAdvancePhases' | 'showFullSurvivorBoard' | 'allowDuplicateEntries';
+  | 'soundEnabled'
+  | 'autoAdvancePhases'
+  | 'showFullSurvivorBoard'
+  | 'allowDuplicateEntries'
+  | 'reducedMotion';
 
 function getCountTone(count: number) {
   if (count < ENTRY_LIMITS.hardMinimum) return 'error';
@@ -40,6 +44,9 @@ export function SetupPage() {
     startGame,
     updateSetupConfig,
     updateSetupDraft,
+    recoveryAvailable,
+    resumeGame,
+    abandonSession,
   } = useAppState();
   const validation = useMemo(
     () =>
@@ -56,6 +63,9 @@ export function SetupPage() {
   const lockAndNavigate = async () => {
     if (await startGame()) await navigate('/game');
   };
+  const resumeAndNavigate = async () => {
+    if (resumeGame()) await navigate('/game');
+  };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -70,6 +80,20 @@ export function SetupPage() {
     <GameStage label="Capsule Chaos setup screen">
       <div className={styles.page}>
         <AppChrome />
+        {recoveryAvailable && (
+          <aside className={styles.recovery} aria-label="Active giveaway found">
+            <div>
+              <strong>Active giveaway found</strong>
+              <span>Resume the exact locked seed, timeline, and official result.</span>
+            </div>
+            <button className="button buttonPrimary" onClick={() => void resumeAndNavigate()}>
+              Resume giveaway
+            </button>
+            <button className="button buttonSecondary" onClick={abandonSession}>
+              Abandon session
+            </button>
+          </aside>
+        )}
         <form className={styles.shell} onSubmit={handleSubmit} noValidate>
           <div className={styles.introRow}>
             <div>
@@ -244,6 +268,18 @@ export function SetupPage() {
                   <span>
                     <strong>Survivor board</strong>
                     <small>{setupDraft.config.showFullSurvivorBoard ? 'Full' : 'Compact'}</small>
+                  </span>
+                </label>
+                <label className={styles.toggleCard}>
+                  <input
+                    type="checkbox"
+                    checked={setupDraft.config.reducedMotion}
+                    disabled={controlsDisabled}
+                    onChange={(event) => updateBooleanConfig('reducedMotion', event.target.checked)}
+                  />
+                  <span>
+                    <strong>Reduced motion</strong>
+                    <small>{setupDraft.config.reducedMotion ? 'On' : 'Off'}</small>
                   </span>
                 </label>
               </div>

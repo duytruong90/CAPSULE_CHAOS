@@ -14,6 +14,10 @@ export interface AppState {
   lockStatus: LockStatus;
   lockError: string | null;
   startGame: () => Promise<boolean>;
+  recoveryAvailable: boolean;
+  resumeGame: () => boolean;
+  abandonSession: () => void;
+  resetGame: () => void;
 }
 
 export const AppStateContext = createContext<AppState | null>(null);

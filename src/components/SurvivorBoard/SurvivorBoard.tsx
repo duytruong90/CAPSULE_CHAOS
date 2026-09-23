@@ -1,8 +1,9 @@
+import { memo, useMemo } from 'react';
 import type { LockedEntry } from '../../game/engine/commitment';
 import type { PlayerStatusSnapshot } from '../../game/state/gameTypes';
 import styles from './SurvivorBoard.module.css';
 
-export function SurvivorBoard({
+export const SurvivorBoard = memo(function SurvivorBoard({
   players,
   entries,
   currentPlayerIds,
@@ -11,11 +12,16 @@ export function SurvivorBoard({
   entries: readonly LockedEntry[];
   currentPlayerIds: readonly string[];
 }) {
-  const current = new Set(currentPlayerIds);
-  const visible = players.filter(
-    (player) => player.state !== 'eliminated' || current.has(player.id),
+  const current = useMemo(() => new Set(currentPlayerIds), [currentPlayerIds]);
+  const visible = useMemo(
+    () => players.filter((player) => player.state !== 'eliminated' || current.has(player.id)),
+    [current, players],
   );
-  const nameFor = (id: string) => entries.find((entry) => entry.id === id)?.displayName ?? id;
+  const names = useMemo(
+    () => new Map(entries.map((entry) => [entry.id, entry.displayName])),
+    [entries],
+  );
+  const nameFor = (id: string) => names.get(id) ?? id;
   return (
     <aside className={styles.board} data-large={visible.length <= 10} aria-label="Survivor board">
       {visible.map((player) => {
@@ -54,4 +60,4 @@ export function SurvivorBoard({
       })}
     </aside>
   );
-}
+});

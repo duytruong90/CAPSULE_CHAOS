@@ -2997,6 +2997,8 @@ The system can produce multiple visually different final sequences from the seed
 
 ## BUILD STEP 15 — True Winner / Audit
 
+**Status:** ✅ COMPLETED
+
 ### Concept
 
 Clearly end the game.
@@ -3017,6 +3019,8 @@ Audience and host can distinguish the final irreversible result from theatrical 
 ---
 
 ## BUILD STEP 16 — Pause / Resume / Skip / Recovery
+
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -3040,6 +3044,8 @@ Refreshing the browser in the middle of Phase 3 can resume the same giveaway.
 
 ## BUILD STEP 17 — Astra Asset Integration
 
+**Status:** ✅ COMPLETED
+
 ### Concept
 
 Replace placeholders with production visuals.
@@ -3060,6 +3066,8 @@ Asset replacements do not require game engine code changes.
 ---
 
 ## BUILD STEP 18 — Performance / Polish
+
+**Status:** ✅ COMPLETED
 
 ### Concept
 

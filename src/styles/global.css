@@ -30,6 +30,11 @@ body {
   overflow: hidden;
 }
 
+img,
+video {
+  max-width: 100%;
+}
+
 button,
 a {
   -webkit-tap-highlight-color: transparent;

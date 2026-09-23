@@ -8,6 +8,7 @@ export interface SetupConfig {
   showFullSurvivorBoard: boolean;
   fakeoutIntensity: FakeoutIntensity;
   allowDuplicateEntries: boolean;
+  reducedMotion: boolean;
 }
 
 export interface SetupDraft {
@@ -31,6 +32,7 @@ export const DEFAULT_SETUP_CONFIG: SetupConfig = Object.freeze({
   showFullSurvivorBoard: true,
   fakeoutIntensity: 'standard',
   allowDuplicateEntries: false,
+  reducedMotion: false,
 });
 
 export const DEFAULT_SETUP_DRAFT: SetupDraft = Object.freeze({

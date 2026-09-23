@@ -2,39 +2,55 @@
 
 A deterministic, browser-only giveaway experience designed for live screen sharing.
 
+CAPSULE CHAOS V1 is complete through all 18 planned build steps. It accepts a
+host-provided roster, locks the giveaway before playback, runs the complete show
+from The Purge through the official winner, and exposes the seed and audit record
+afterward.
+
 ## Development
 
-Requires a current Node.js release and a package manager compatible with `package.json` scripts.
+Requires a current Node.js release and pnpm.
 
 ```sh
 pnpm install
 pnpm dev
 ```
 
-The app opens on `/setup`. Start Giveaway locks the roster, seed, configuration, and
-full simulation, then autoplays The Purge on `/game`.
+The app opens on `/setup`. Starting a giveaway validates and locks the roster,
+configuration, secure seed, commitment, complete simulation, and render-only
+timeline before navigating to `/game`.
 
-## Implemented through build steps 6–8
+## V1 implementation
 
-- CSS gachapon machine, capsule tumble/drop/open, and dynamic name reveal.
-- Fast / Normal / Cinematic profiles, a presentation clock, pause after the current
-  animation, resume, and skip to the current event's resolved state.
-- Six deterministic Phase 1 cards: Shield, Second Life, Double Trouble, Revive,
-  Reverse, and Lucky Escape. Weighted card opportunities follow five completed
-  eliminations; rescues cannot generate repeated card loops. Double Trouble needs
-  room for all three elimination checks above the target. Revive respects the
-  per-player cap. Reverse marks the next standard draw, which still checks protection.
-- Resolved timeline survivor count and a Phase I completion screen. A 50-player
-  game stops at 20; smaller rosters use the existing adaptive engine targets.
-- Shared Common / Rare / Epic / Legendary card frames and reveal choreography,
-  generic unknown-key fallback, dynamic text, reduced-motion support, and central
-  audio cue hooks (silent until audio assets/adapters are integrated).
+- Complete Phase 0 opening and Phase 1–5 progression, including The Purge, Chaos
+  Awakens, Survival, Final Five rule reversal, Final Fate, final-two fake-outs, and
+  one clearly identified official winner.
+- Deterministic, UI-independent game engine with convergence safeguards, an event
+  cap, reproducible timelines, and no production winner override or reroll control.
+- All 16 V1 Chaos Cards with eligibility checks, safe fallbacks, protection,
+  revival, target-selection, and late-phase behavior.
+- Seed commitment, post-game seed reveal, verification, audit log, and JSON export.
+- Fast, Normal, and Cinematic timing profiles with pause, resume, skip, manual or
+  automatic phase advance, mute, fullscreen Show Mode, and emergency reset.
+- Local session persistence and refresh recovery, including recovery during final
+  fake-outs without changing the locked outcome.
+- Responsive fixed 1920×1080 presentation stage with letterboxing, reduced-motion
+  handling, survivor status, phase boundaries, and official-winner presentation.
 
-Next Phase, or automatic phase advance, reaches a Phase II handoff screen. Later
-phase playback, the other ten cards, winner/audit UI, refresh recovery, production
-assets, and full live-control polish remain for their assigned build steps.
-In-memory playback survives navigating between Setup and Stage; browser refresh
-recovery is not implemented yet.
+## Production media
+
+The Priority 1–3 media pack is installed under `public/assets`. It contains 73
+assets totaling approximately 1.36 MB:
+
+- two WebP arena backgrounds;
+- 53 SVG machine, capsule, card, icon, and effect assets;
+- 18 original WAV sound cues.
+
+The typed asset manifest, preloader, transparent/CSS fallbacks, global mute, and
+timeline-controlled effects keep presentation failures separate from gameplay.
+Run `pnpm assets:build` to regenerate the vector artwork, audio, and development
+preview. See [ASTRA_ASSET_MAP.md](ASTRA_ASSET_MAP.md) for the integration contract
+and [docs/MEDIA_PROVENANCE.md](docs/MEDIA_PROVENANCE.md) for generation provenance.
 
 Engine rules are now `capsule-chaos-engine-v2-purge`. Lock schema v2 includes that
 rules version in the commitment; timeline schema v2 adds resolved card metadata and
@@ -50,5 +66,15 @@ pnpm test
 pnpm build
 ```
 
-The UI renders inside a fixed 1920×1080 logical stage that scales uniformly to the browser viewport.
-Ultrawide and taller viewports are letterboxed so the stage is never stretched.
+Automated tests cover deterministic simulations, all cards and phases, commitment
+verification, recovery, playback controls, winner presentation, and the complete
+media inventory. Manual QA for the finished V1 has also been completed successfully.
+
+## Production deployment
+
+`pnpm build` creates the static site in `dist/`. Configure the host to rewrite
+unknown browser-history routes, including `/setup` and `/game`, to `index.html`.
+See [PRODUCTION_READINESS.md](PRODUCTION_READINESS.md) for deployment notes.
+
+Remote phone control and cross-device recovery require a backend and remain
+optional post-V1 work.

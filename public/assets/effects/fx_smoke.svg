@@ -1,0 +1,1 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540"><defs><radialGradient id="mist"><stop stop-color="#c4a5e1" stop-opacity=".22"/><stop offset="1" stop-color="#c4a5e1" stop-opacity="0"/></radialGradient></defs><ellipse cx="250" cy="490" rx="420" ry="90" fill="url(#mist)"/><ellipse cx="760" cy="470" rx="330" ry="115" fill="url(#mist)"/></svg>

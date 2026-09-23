@@ -16,8 +16,10 @@ export function WinnerScreen({
     <section className={styles.winner} data-official={official} aria-label="Official winner">
       <div className={styles.rays} aria-hidden="true" />
       <AssetImage className={styles.goldCapsule} assetId="capsule_gold" alt="" />
+      <AssetImage className={styles.frame} assetId="winner_frame" />
       <div className={styles.crown} aria-hidden="true">
-        ♛
+        <span>♛</span>
+        <AssetImage assetId="icon_crown" />
       </div>
       <p>OFFICIAL WINNER</p>
       <h1>{winner.displayName}</h1>

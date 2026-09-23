@@ -140,3 +140,23 @@
   object-fit: contain;
   pointer-events: none;
 }
+.machine:has(img[data-asset-id='gachapon_base'][data-loaded='true']) .base,
+.machine:has(img[data-asset-id='gachapon_base'][data-loaded='true']) .cap {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.machine:has(img[data-asset-id='gachapon_base'][data-loaded='true']) .dial,
+.machine:has(img[data-asset-id='gachapon_chute'][data-loaded='true']) .chute,
+.machine:has(img[data-asset-id='gachapon_glass'][data-loaded='true']) .reflection {
+  visibility: hidden;
+}
+.machine:has(img[data-asset-id='gachapon_glass'][data-loaded='true']) .bowl {
+  background: none;
+  border-color: transparent;
+  box-shadow: none;
+}
+.cap,
+.base p {
+  z-index: 7;
+}

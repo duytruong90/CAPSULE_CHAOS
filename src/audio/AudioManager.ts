@@ -2,10 +2,13 @@ import type { CardRarity } from '../game/cards/cardTypes';
 
 export type AudioCue =
   | 'capsule.spin'
+  | 'capsule.drop'
   | 'capsule.open'
   | 'result.elimination'
   | 'result.safe'
   | 'result.revival'
+  | 'result.shield'
+  | 'result.duel'
   | 'final.heartbeat'
   | 'final.glitch'
   | 'final.winner'
@@ -21,6 +24,22 @@ export class AudioManager {
   private listeners = new Set<(event: AudioCueEvent) => void>();
   private muteListeners = new Set<() => void>();
   private muted = false;
+  private stopListeners = new Set<() => void>();
+  subscribeStop(listener: () => void) {
+    this.stopListeners.add(listener);
+    return () => {
+      this.stopListeners.delete(listener);
+    };
+  }
+  stopAll() {
+    for (const listener of this.stopListeners) {
+      try {
+        listener();
+      } catch {
+        /* Optional media. */
+      }
+    }
+  }
   subscribe(listener: (event: AudioCueEvent) => void) {
     this.listeners.add(listener);
     return () => {

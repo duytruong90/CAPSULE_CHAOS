@@ -29,6 +29,7 @@ export class PlaybackController {
   private connected = false;
   private started = false;
   private cued = new Set<string>();
+  private soundEnabled: boolean;
 
   constructor(
     readonly timeline: GameTimeline,
@@ -36,6 +37,7 @@ export class PlaybackController {
     readonly entryCount: number,
     initialSnapshot?: PlaybackSnapshot,
   ) {
+    this.soundEnabled = config.soundEnabled;
     this.snapshot = initialSnapshot
       ? { ...initialSnapshot }
       : {
@@ -49,6 +51,9 @@ export class PlaybackController {
     this.started = Boolean(initialSnapshot);
   }
   getSnapshot = () => this.snapshot;
+  setSoundEnabled = (enabled: boolean) => {
+    this.soundEnabled = enabled;
+  };
   subscribe = (listener: () => void) => {
     this.listeners.add(listener);
     return () => {
@@ -102,6 +107,7 @@ export class PlaybackController {
     }
     return () => {
       this.connected = false;
+      audioManager.stopAll();
       if (this.timer !== undefined) {
         this.pendingMs = Math.max(0, this.deadline - Date.now());
         clearTimeout(this.timer);
@@ -114,17 +120,19 @@ export class PlaybackController {
     let cue: AudioCue | undefined;
     if (event.type === 'card-reveal')
       cue = `card.${event.payload.rarity}.${end ? 'impact' : 'charge'}`;
-    else if (!end && event.type === 'capsule-spin') cue = 'capsule.spin';
+    else if (event.type === 'capsule-spin') cue = end ? 'capsule.drop' : 'capsule.spin';
     else if (!end && event.type === 'player-reveal') cue = 'capsule.open';
     else if (!end && ['elimination', 'safe', 'revival'].includes(event.type))
       cue = `result.${event.type}` as AudioCue;
     else if (!end && event.type === 'final-chamber') cue = 'final.heartbeat';
     else if (!end && event.type === 'fake-winner') cue = 'final.glitch';
     else if (!end && event.type === 'winner') cue = 'final.winner';
+    else if (!end && event.type === 'protection') cue = 'result.shield';
+    else if (!end && event.type === 'duel') cue = 'result.duel';
     const key = `${event.id}:${end}`;
     if (cue && !this.cued.has(key)) {
       this.cued.add(key);
-      audioManager.cue({ cue, eventId: event.id }, this.config.soundEnabled);
+      audioManager.cue({ cue, eventId: event.id }, this.soundEnabled);
     }
   }
   /** Explicit completion API, shared by the clock and Skip. Idempotent per event. */
@@ -189,6 +197,7 @@ export class PlaybackController {
     }
   };
   skip = () => {
+    audioManager.stopAll();
     this.complete(true);
   };
   nextPhase = () => {

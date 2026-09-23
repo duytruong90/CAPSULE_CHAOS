@@ -7,7 +7,7 @@ import { AssetImage } from '../../components/AssetMedia/AssetImage';
 
 describe('Astra asset integration', () => {
   it('resolves typed logical IDs and includes critical show assets', () => {
-    expect(getAsset('gachapon_base').src).toBe('/assets/machine/gachapon_base.webp');
+    expect(getAsset('gachapon_base').src).toBe('/assets/machine/gachapon_base.svg');
     expect(getCriticalAssets().map((asset) => asset.id)).toContain('capsule_gold');
   });
 
@@ -17,6 +17,53 @@ describe('Astra asset integration', () => {
     fireEvent.error(image);
     expect(image).toHaveAttribute('data-fallback', 'true');
     expect(image.getAttribute('src')).toMatch(/^data:image/);
+  });
+
+  it('loads the new image when a live logical asset ID changes, including after a failure', () => {
+    const view = render(<AssetImage assetId="bg_arena_main" alt="Arena" />);
+    const image = screen.getByRole('img', { name: 'Arena' });
+    fireEvent.error(image);
+    view.rerender(<AssetImage assetId="bg_arena_final" alt="Arena" />);
+    expect(image).toHaveAttribute('src', getAsset('bg_arena_final').src);
+    expect(image).toHaveAttribute('data-fallback', 'false');
+    fireEvent.load(image);
+    expect(image).toHaveAttribute('data-loaded', 'true');
+  });
+
+  it('stops audible sounds on mute, event replacement, skip, and adapter disposal', () => {
+    const players: Array<{
+      play: ReturnType<typeof vi.fn>;
+      pause: ReturnType<typeof vi.fn>;
+      volume: number;
+      currentTime: number;
+      onended: null;
+      onerror: null;
+    }> = [];
+    const uninstall = installManifestAudioAdapter(() => {
+      const player = {
+        play: vi.fn(() => Promise.resolve()),
+        pause: vi.fn(),
+        volume: 1,
+        currentTime: 0,
+        onended: null,
+        onerror: null,
+      };
+      players.push(player);
+      return player;
+    });
+    audioManager.setMuted(false);
+    audioManager.cue({ cue: 'final.heartbeat', eventId: 'a' }, true);
+    audioManager.setMuted(true);
+    expect(players[0]!.pause).toHaveBeenCalledOnce();
+    audioManager.setMuted(false);
+    audioManager.cue({ cue: 'final.winner', eventId: 'b' }, true);
+    audioManager.cue({ cue: 'capsule.spin', eventId: 'c' }, true);
+    expect(players[1]!.pause).toHaveBeenCalledOnce();
+    audioManager.stopAll();
+    expect(players[2]!.pause).toHaveBeenCalledOnce();
+    audioManager.cue({ cue: 'capsule.open', eventId: 'd' }, true);
+    uninstall();
+    expect(players[3]!.pause).toHaveBeenCalledOnce();
   });
 
   it('reports preload successes and failures without rejecting the show', async () => {
@@ -31,7 +78,14 @@ describe('Astra asset integration', () => {
 
   it('isolates missing audio and honors global mute', () => {
     const play = vi.fn(() => Promise.reject(new Error('autoplay blocked')));
-    const createAudio = vi.fn(() => ({ play, volume: 1 }));
+    const createAudio = vi.fn(() => ({
+      play,
+      pause: vi.fn(),
+      currentTime: 0,
+      volume: 1,
+      onended: null,
+      onerror: null,
+    }));
     const uninstall = installManifestAudioAdapter(createAudio);
     audioManager.setMuted(true);
     audioManager.cue({ cue: 'capsule.open', eventId: 'muted' }, true);

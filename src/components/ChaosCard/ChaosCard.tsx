@@ -2,6 +2,8 @@ import type { CSSProperties } from 'react';
 import type { CardRarity } from '../../game/cards/cardTypes';
 import { cardPresentation } from '../../presentation/presentationRegistry';
 import styles from './ChaosCard.module.css';
+import { AssetImage } from '../AssetMedia/AssetImage';
+import { cardAssetMap } from '../../assets/showAssets';
 
 export interface ChaosCardProps {
   cardId: string;
@@ -44,9 +46,14 @@ export function ChaosCard({
         className={styles.card}
         tabIndex={name.length + description.length + targetText.length > 300 ? 0 : undefined}
       >
+        <AssetImage assetId={`card_${rarity}_frame`} className={styles.frame} />
+        <AssetImage assetId="card_back" className={styles.back} />
         <p className={styles.rarity}>{presentation.label} / CHAOS CARD</p>
         <div className={styles.symbol} aria-hidden="true">
-          {presentation.symbol}
+          <span>{presentation.symbol}</span>
+          {cardAssetMap[presentationKey] && (
+            <AssetImage assetId={cardAssetMap[presentationKey].icon} />
+          )}
         </div>
         <h2>{name}</h2>
         <p className={styles.description}>{description}</p>

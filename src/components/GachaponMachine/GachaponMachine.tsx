@@ -25,13 +25,12 @@ export function GachaponMachine({ spinning = false }: { spinning?: boolean }) {
                 {
                   '--i': i,
                   left: `${12 + ((i * 23) % 66)}%`,
-                  top: `${12 + ((i * 31) % 62)}%`,
+                  top: `${12 + ((i * 37) % 62)}%`,
                   transform: `rotate(${i * 37}deg)`,
-                  filter: `hue-rotate(${i * 43}deg)`,
                 } as CSSProperties
               }
             >
-              <Capsule />
+              <Capsule color={(['red', 'blue', 'green'] as const)[i % 3] ?? 'red'} />
             </div>
           ))}
         </div>

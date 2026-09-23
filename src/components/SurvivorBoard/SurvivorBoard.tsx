@@ -2,6 +2,7 @@ import { memo, useMemo } from 'react';
 import type { LockedEntry } from '../../game/engine/commitment';
 import type { PlayerStatusSnapshot } from '../../game/state/gameTypes';
 import styles from './SurvivorBoard.module.css';
+import { AssetImage } from '../AssetMedia/AssetImage';
 
 export const SurvivorBoard = memo(function SurvivorBoard({
   players,
@@ -49,11 +50,21 @@ export const SurvivorBoard = memo(function SurvivorBoard({
             <strong title={nameFor(player.id)}>{nameFor(player.id)}</strong>
             <span>{status}</span>
             <div className={styles.tokens} aria-label={`Status: ${status}`}>
-              {player.shieldCharges > 0 && <i title="Shield">⬡ {player.shieldCharges}</i>}
-              {player.secondLifeCharges > 0 && (
-                <i title="Second Life">♥ {player.secondLifeCharges}</i>
+              {player.shieldCharges > 0 && (
+                <i title="Shield">
+                  <AssetImage assetId="icon_shield" /> SHIELD {player.shieldCharges}
+                </i>
               )}
-              {locked && <i title="Final Pass">◆ PASS</i>}
+              {player.secondLifeCharges > 0 && (
+                <i title="Second Life">
+                  <AssetImage assetId="icon_second_life" /> LIFE {player.secondLifeCharges}
+                </i>
+              )}
+              {locked && (
+                <i title="Final Pass">
+                  <AssetImage assetId="icon_final_pass" /> PASS
+                </i>
+              )}
             </div>
           </div>
         );

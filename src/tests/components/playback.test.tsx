@@ -114,6 +114,7 @@ describe('timeline playback', () => {
     disconnectRecovered();
   });
   it('renders the UI boundary, count and controls without exposing seed or winner', () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
     const playback = new PlaybackController(session.timeline, DEFAULT_SETUP_CONFIG, 50);
     const view = render(<GameShow session={session} playback={playback} title="Test giveaway" />);
     expect(screen.getByRole('button', { name: 'Next Phase' })).toBeDisabled();
@@ -127,6 +128,8 @@ describe('timeline playback', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Next Phase' }));
     expect(playback.event?.phase).toBe('phase-2');
     expect(screen.getByText('PHASE II')).toBeInTheDocument();
+    expect(consoleError).not.toHaveBeenCalled();
+    expect(view.container.querySelectorAll('[data-effect]')).toHaveLength(1);
   });
 });
 

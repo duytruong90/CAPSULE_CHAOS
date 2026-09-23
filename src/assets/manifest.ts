@@ -16,6 +16,7 @@ export type AssetId =
   | 'card_rare_frame'
   | 'card_epic_frame'
   | 'card_legendary_frame'
+  | 'winner_frame'
   | 'fx_elimination_slash'
   | 'fx_shield_hit'
   | 'fx_revival'
@@ -23,10 +24,39 @@ export type AssetId =
   | 'fx_glitch'
   | 'fx_legendary_burst'
   | 'fx_winner_confetti'
+  | 'fx_mirror'
+  | 'fx_chaos_bomb'
+  | 'fx_duel'
+  | 'fx_steal'
+  | 'fx_override'
+  | 'fx_jackpot'
+  | 'fx_final_pass'
+  | 'fx_second_life'
+  | 'fx_particles'
+  | 'fx_transition_wipe'
+  | 'fx_glitch_scan'
+  | 'fx_glitch_split'
+  | 'fx_smoke'
+  | 'fx_lightning'
+  | 'fx_ambient'
+  | 'fx_victory_rays'
   | 'icon_shield'
   | 'icon_second_life'
   | 'icon_revive'
   | 'icon_duel'
+  | 'icon_mirror'
+  | 'icon_chaos_bomb'
+  | 'icon_reverse'
+  | 'icon_steal'
+  | 'icon_override'
+  | 'icon_jackpot'
+  | 'icon_final_pass'
+  | 'icon_nullify'
+  | 'icon_ghost_return'
+  | 'icon_fate_swap'
+  | 'icon_double_trouble'
+  | 'icon_lucky_escape'
+  | 'icon_crown'
   | 'sfx_capsule_spin'
   | 'sfx_capsule_drop'
   | 'sfx_capsule_open'
@@ -35,7 +65,16 @@ export type AssetId =
   | 'sfx_safe'
   | 'sfx_revival'
   | 'sfx_glitch'
-  | 'sfx_winner';
+  | 'sfx_winner'
+  | 'sfx_shield'
+  | 'sfx_duel'
+  | 'sfx_heartbeat'
+  | 'sfx_rare_charge'
+  | 'sfx_rare_impact'
+  | 'sfx_epic_charge'
+  | 'sfx_epic_impact'
+  | 'sfx_legendary_charge'
+  | 'sfx_legendary_impact';
 
 export interface AssetDefinition {
   id: AssetId;
@@ -52,16 +91,22 @@ function image(id: AssetId, category: AssetCategory, critical = false): AssetDef
     id,
     category,
     kind: 'image',
-    src: `/assets/${category}/${id}.${category === 'icons' ? 'svg' : 'webp'}`,
+    src: `${import.meta.env.BASE_URL}assets/${category}/${id}.${category === 'background' ? 'webp' : 'svg'}`,
     fallbackSrc: transparentPixel,
     critical,
   };
 }
-function video(id: AssetId, critical = false): AssetDefinition {
-  return { id, category: 'effects', kind: 'video', src: `/assets/effects/${id}.webm`, critical };
+function effect(id: AssetId, critical = false): AssetDefinition {
+  return image(id, 'effects', critical);
 }
 function audio(id: AssetId, critical = false): AssetDefinition {
-  return { id, category: 'audio', kind: 'audio', src: `/assets/audio/${id}.ogg`, critical };
+  return {
+    id,
+    category: 'audio',
+    kind: 'audio',
+    src: `${import.meta.env.BASE_URL}assets/audio/${id}.wav`,
+    critical,
+  };
 }
 
 const definitions: AssetDefinition[] = [
@@ -79,17 +124,55 @@ const definitions: AssetDefinition[] = [
   image('card_rare_frame', 'cards', true),
   image('card_epic_frame', 'cards', true),
   image('card_legendary_frame', 'cards', true),
-  video('fx_elimination_slash', true),
-  video('fx_shield_hit'),
-  video('fx_revival'),
-  video('fx_reverse'),
-  video('fx_glitch', true),
-  video('fx_legendary_burst'),
-  video('fx_winner_confetti', true),
+  image('winner_frame', 'cards', true),
+  effect('fx_elimination_slash', true),
+  effect('fx_shield_hit'),
+  effect('fx_revival'),
+  effect('fx_reverse'),
+  effect('fx_glitch', true),
+  effect('fx_legendary_burst'),
+  effect('fx_winner_confetti', true),
+  ...(
+    [
+      'fx_mirror',
+      'fx_chaos_bomb',
+      'fx_duel',
+      'fx_steal',
+      'fx_override',
+      'fx_jackpot',
+      'fx_final_pass',
+      'fx_second_life',
+      'fx_particles',
+      'fx_transition_wipe',
+      'fx_glitch_scan',
+      'fx_glitch_split',
+      'fx_smoke',
+      'fx_lightning',
+      'fx_ambient',
+      'fx_victory_rays',
+    ] as const
+  ).map((id) => effect(id)),
   image('icon_shield', 'icons'),
   image('icon_second_life', 'icons'),
   image('icon_revive', 'icons'),
   image('icon_duel', 'icons'),
+  ...(
+    [
+      'icon_mirror',
+      'icon_chaos_bomb',
+      'icon_reverse',
+      'icon_steal',
+      'icon_override',
+      'icon_jackpot',
+      'icon_final_pass',
+      'icon_nullify',
+      'icon_ghost_return',
+      'icon_fate_swap',
+      'icon_double_trouble',
+      'icon_lucky_escape',
+      'icon_crown',
+    ] as const
+  ).map((id) => image(id, 'icons')),
   audio('sfx_capsule_spin', true),
   audio('sfx_capsule_drop', true),
   audio('sfx_capsule_open', true),
@@ -99,6 +182,19 @@ const definitions: AssetDefinition[] = [
   audio('sfx_revival'),
   audio('sfx_glitch', true),
   audio('sfx_winner', true),
+  ...(
+    [
+      'sfx_shield',
+      'sfx_duel',
+      'sfx_heartbeat',
+      'sfx_rare_charge',
+      'sfx_rare_impact',
+      'sfx_epic_charge',
+      'sfx_epic_impact',
+      'sfx_legendary_charge',
+      'sfx_legendary_impact',
+    ] as const
+  ).map((id) => audio(id)),
 ];
 
 export const assetManifest: Readonly<Record<AssetId, Readonly<AssetDefinition>>> = Object.freeze(

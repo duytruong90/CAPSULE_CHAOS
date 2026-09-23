@@ -12,6 +12,25 @@
   border: 6px solid #f8eaff;
   background: radial-gradient(circle at 30% 30%, #fbcaff, #b857ee 55%, #603396);
 }
+.capsule span {
+  overflow: hidden;
+}
+.capsule span:has(img[data-loaded='true']) {
+  border: 0;
+  background: transparent;
+  border-radius: 0;
+}
+.capsule img {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 180px;
+  height: 180px;
+  max-width: none;
+}
+.capsule span:last-child img {
+  top: -90px;
+}
 .capsule span:first-child {
   top: 0;
   border-radius: 100px 100px 8px 8px;

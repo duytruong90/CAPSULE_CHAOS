@@ -20,6 +20,8 @@ import { EventRenderer } from './EventRenderer';
 import type { PlaybackController } from './playbackController';
 import styles from './GameShow.module.css';
 import { audioManager } from '../audio/AudioManager';
+import { AssetImage } from '../components/AssetMedia/AssetImage';
+import { EventEffects } from '../components/AssetMedia/EventEffects';
 
 export function GameShow({
   session,
@@ -44,6 +46,9 @@ export function GameShow({
   useEffect(() => {
     audioManager.setMuted(!session.lock.payload.config.soundEnabled);
   }, [session.lock.payload.config.soundEnabled]);
+  useEffect(() => {
+    playback.setSoundEnabled(!muted);
+  }, [muted, playback]);
   const audit = useMemo(() => createAuditDocument(session, title), [session, title]);
   const event = playback.event;
   const official = state.stage === 'complete' && event?.type === 'winner';
@@ -117,6 +122,15 @@ export function GameShow({
       data-reduced-motion={session.lock.payload.config.reducedMotion}
       onContextMenu={showMode ? (contextEvent) => contextEvent.preventDefault() : undefined}
     >
+      <AssetImage
+        className={styles.background}
+        assetId={
+          event && ['phase-4', 'phase-5', 'final'].includes(event.phase)
+            ? 'bg_arena_final'
+            : 'bg_arena_main'
+        }
+      />
+      <AssetImage className={styles.ambient} assetId="fx_ambient" />
       <div className={styles.hud}>
         <div>
           <span className={styles.title}>{title}</span>
@@ -179,6 +193,9 @@ export function GameShow({
             )
           )}
         </div>
+        {event && (
+          <EventEffects key={`effects-${event.id}`} event={event} settled={state.settled} />
+        )}
         {official && <AuditPanel audit={audit} verification={verification} />}
       </div>
       <footer className={styles.footer}>

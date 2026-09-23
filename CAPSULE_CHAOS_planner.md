@@ -3314,6 +3314,8 @@ It also prevents animation changes from affecting game results.
 
 # 45. Astra Asset Deliverables by Priority
 
+**Media status:** Original Priority 1–3 pack installed in `public/assets` (73 files, approximately 1.36 MB). Includes two generated WebP arenas, 53 scalable SVG assets/effect plates, and 18 original WAV sound cues. Runtime integration, fallbacks, mute and reduced motion are covered by tests. See `ASTRA_ASSET_MAP.md` and `docs/MEDIA_PROVENANCE.md`; preview at `/docs/media-preview.html` using the development server. Effects use timeline-controlled CSS animation rather than pre-rendered video.
+
 ## Priority 1 — Required for first playable build
 
 - game background

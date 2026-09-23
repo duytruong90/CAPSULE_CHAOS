@@ -14,6 +14,16 @@ const CARD_PRESENTATIONS: Readonly<Record<string, { symbol: string }>> = {
   'card.revive': { symbol: '✚' },
   'card.reverse': { symbol: '↶' },
   'card.lucky-escape': { symbol: '✦' },
+  'card.mirror': { symbol: '◫' },
+  'card.chaos-bomb': { symbol: '✹' },
+  'card.duel': { symbol: '⚔' },
+  'card.steal': { symbol: '⌁' },
+  'card.nullify': { symbol: '⊘' },
+  'card.final-pass': { symbol: '◆' },
+  'card.ghost-return': { symbol: '♙' },
+  'card.fate-swap': { symbol: '⇄' },
+  'card.system-override': { symbol: '⌘' },
+  'card.jackpot': { symbol: '★' },
 };
 export function cardPresentation(key: string, rarity: CardRarity) {
   return { ...RARITY_PRESENTATIONS[rarity], ...(CARD_PRESENTATIONS[key] ?? {}) };

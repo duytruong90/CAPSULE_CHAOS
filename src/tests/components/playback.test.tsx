@@ -41,12 +41,12 @@ describe('timeline playback', () => {
       vi.advanceTimersByTime(1_000_000);
       expect(playback.getSnapshot().index).toBe(index);
       playback.nextPhase();
-      expect(playback.getSnapshot().stage).toBe('handoff');
-      expect(playback.event?.phase).toBe('phase-1');
+      expect(playback.getSnapshot().stage).toBe('event');
+      expect(playback.event?.phase).toBe('phase-2');
       disconnect();
     },
   );
-  it('honors automatic phase advance but gates unfinished later-phase presentation', () => {
+  it('honors automatic phase advance through the complete precomputed show', () => {
     const playback = new PlaybackController(
       session.timeline,
       { ...DEFAULT_SETUP_CONFIG, autoAdvancePhases: true },
@@ -54,7 +54,7 @@ describe('timeline playback', () => {
     );
     const disconnect = playback.connect();
     vi.runAllTimers();
-    expect(playback.getSnapshot()).toMatchObject({ stage: 'handoff', remaining: 20 });
+    expect(playback.getSnapshot()).toMatchObject({ stage: 'complete', remaining: 1 });
     disconnect();
   });
   it('pauses after a card resolves, ignores repeated skip, and resumes the exact queue', () => {
@@ -109,7 +109,8 @@ describe('timeline playback', () => {
     expect(screen.getByRole('heading', { name: '20 SURVIVORS' })).toBeInTheDocument();
     expect(screen.queryByText('OFFICIAL WINNER')).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Next Phase' }));
-    expect(screen.getByText(/Phase II presentation arrives/)).toBeInTheDocument();
+    expect(playback.event?.phase).toBe('phase-2');
+    expect(screen.getByText('PHASE II')).toBeInTheDocument();
   });
 });
 

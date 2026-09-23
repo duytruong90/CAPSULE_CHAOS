@@ -1,11 +1,30 @@
-import type { DrawRule, GamePhase, ProtectionKind } from '../state/gameTypes';
+import type {
+  DrawRule,
+  FakeoutType,
+  FinalFateOutcome,
+  GamePhase,
+  PlayerStatusSnapshot,
+  ProtectionKind,
+} from '../state/gameTypes';
 import type { EngineEventPayloadByType } from '../state/gameTypes';
 
 export const TIMELINE_SCHEMA_VERSION = 'capsule-chaos-timeline-v2' as const;
 
 export interface TimelinePayloadByType {
-  'capsule-spin': { sourceEngineEventId: string; drawRule: DrawRule; marked: boolean };
-  'player-reveal': { sourceEngineEventId: string; drawRule: DrawRule; marked: boolean };
+  'capsule-spin': {
+    sourceEngineEventId: string;
+    drawRule: DrawRule;
+    marked: boolean;
+    nearMiss: boolean;
+    firstSafeDraw: boolean;
+  };
+  'player-reveal': {
+    sourceEngineEventId: string;
+    drawRule: DrawRule;
+    marked: boolean;
+    nearMiss: boolean;
+    firstSafeDraw: boolean;
+  };
   elimination: { sourceEngineEventId: string; activeCount: number; eliminationCount: number };
   safe: { sourceEngineEventId: string; activeCount: number };
   'card-reveal': { sourceEngineEventId: string } & EngineEventPayloadByType['card-resolved'];
@@ -14,6 +33,14 @@ export interface TimelinePayloadByType {
     protection: ProtectionKind;
     remainingCharges: number;
   };
+  'protection-granted': {
+    sourceEngineEventId: string;
+    protection: ProtectionKind;
+    charges: number;
+    sourcePlayerId?: string;
+  };
+  'phase-lock': { sourceEngineEventId: string; untilPhase: GamePhase };
+  'state-restored': { sourceEngineEventId: string; cardId: string; activeCount: number };
   revival: { sourceEngineEventId: string; activeCount: number; revivalCount: number };
   duel: { sourceEngineEventId: string; winnerId: string; loserId: string };
   'phase-transition': {
@@ -22,8 +49,24 @@ export interface TimelinePayloadByType {
     activeCount: number;
     targetCount: number;
   };
-  'fake-winner': { sourceEngineEventId: string; apparentWinnerId: string };
-  'final-fate': { sourceEngineEventId: string; outcome: string };
+  'final-chamber': {
+    sourceEngineEventId: string;
+    winnerId: string;
+    loserId: string;
+    fakeoutType: FakeoutType;
+  };
+  'fake-winner': {
+    sourceEngineEventId: string;
+    apparentWinnerId: string;
+    actualWinnerId: string;
+    variant: Exclude<FakeoutType, 'none'>;
+  };
+  'final-fate': {
+    sourceEngineEventId: string;
+    outcome: FinalFateOutcome;
+    advancingPlayerIds: readonly string[];
+    eliminatedPlayerIds: readonly string[];
+  };
   winner: { sourceEngineEventId: string; winnerId: string };
 }
 
@@ -38,6 +81,7 @@ export type TimelineEventFor<Type extends TimelineEventType> = Readonly<{
   payload: Readonly<TimelinePayloadByType[Type]>;
   presentationKey: string;
   minimumDurationMs: number;
+  snapshot: readonly PlayerStatusSnapshot[];
 }>;
 
 export type TimelineEvent = {

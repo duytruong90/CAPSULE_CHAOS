@@ -2862,6 +2862,8 @@ not rebuilding the screen.
 
 ## BUILD STEP 9 — All V1 Cards
 
+**Status:** ✅ COMPLETED
+
 ### Concept
 
 Implement all 16 card behaviors.
@@ -2881,6 +2883,8 @@ No generated card can produce an invalid game state.
 ---
 
 ## BUILD STEP 10 — Phase 2 / Survivor Board
+
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2902,6 +2906,8 @@ The audience can track the remaining pool easily.
 
 ## BUILD STEP 11 — Phase 3
 
+**Status:** ✅ COMPLETED
+
 ### Concept
 
 Slow pacing and emphasize every draw.
@@ -2922,6 +2928,8 @@ The final 10 → 5 feels noticeably more tense than the opening.
 
 ## BUILD STEP 12 — Phase 4 Rule Reversal
 
+**Status:** ✅ COMPLETED
+
 ### Concept
 
 Drawn capsule becomes safe.
@@ -2940,6 +2948,8 @@ Audience clearly understands the reversed rule.
 ---
 
 ## BUILD STEP 13 — Final Fate
+
+**Status:** ✅ COMPLETED
 
 ### Concept
 
@@ -2961,6 +2971,8 @@ The final 3 feels unique rather than like another normal elimination.
 ---
 
 ## BUILD STEP 14 — Final Two / Fake-Out Engine
+
+**Status:** ✅ COMPLETED
 
 ### Concept
 

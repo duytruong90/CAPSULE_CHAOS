@@ -6,6 +6,7 @@ export interface CardEffectContext {
   actorId: string;
   rng: SeededRng;
   targetCount?: number;
+  previousReversibleCardId?: string;
 }
 
 export type CardRarity = 'common' | 'rare' | 'epic' | 'legendary';

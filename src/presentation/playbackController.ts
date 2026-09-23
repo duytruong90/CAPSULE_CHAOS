@@ -11,7 +11,7 @@ import {
 
 export interface PlaybackSnapshot {
   index: number;
-  stage: 'intro' | 'event' | 'boundary' | 'handoff';
+  stage: 'intro' | 'event' | 'boundary' | 'complete';
   settled: boolean;
   paused: boolean;
   remaining: number;
@@ -107,6 +107,8 @@ export class PlaybackController {
     else if (!end && event.type === 'player-reveal') cue = 'capsule.open';
     else if (!end && ['elimination', 'safe', 'revival'].includes(event.type))
       cue = `result.${event.type}` as AudioCue;
+    else if (!end && event.type === 'final-chamber') cue = 'final.heartbeat';
+    else if (!end && event.type === 'fake-winner') cue = 'final.glitch';
     const key = `${event.id}:${end}`;
     if (cue && !this.cued.has(key)) {
       this.cued.add(key);
@@ -118,15 +120,23 @@ export class PlaybackController {
     if (
       this.snapshot.settled ||
       this.snapshot.stage === 'boundary' ||
-      this.snapshot.stage === 'handoff'
+      this.snapshot.stage === 'complete'
     )
       return;
     this.clear();
     const event = this.event;
     const remaining =
       event && 'activeCount' in event.payload ? event.payload.activeCount : this.snapshot.remaining;
-    const boundary = event?.type === 'phase-transition' && event.payload.status === 'complete';
-    this.update({ settled: true, remaining, stage: boundary ? 'boundary' : this.snapshot.stage });
+    const boundary =
+      event?.type === 'phase-transition' &&
+      event.payload.status === 'complete' &&
+      event.phase !== 'final';
+    const complete = event?.type === 'winner';
+    this.update({
+      settled: true,
+      remaining,
+      stage: complete ? 'complete' : boundary ? 'boundary' : this.snapshot.stage,
+    });
     if (event) this.cue(event, true);
     if (this.snapshot.paused || (boundary && !this.config.autoAdvancePhases)) return;
     this.schedule(
@@ -144,8 +154,8 @@ export class PlaybackController {
     const index = this.snapshot.index + 1;
     const event = this.timeline.events[index];
     // Later phase renderers ship in their own build steps. Never leak their results here.
-    if (!event || event.phase !== 'phase-1') {
-      this.update({ stage: 'handoff', settled: true });
+    if (!event) {
+      this.update({ stage: 'complete', settled: true });
       return;
     }
     this.update({ index, stage: 'event', settled: false, elapsedMs: 0 });
@@ -153,7 +163,7 @@ export class PlaybackController {
     this.schedule(this.duration, this.complete);
   };
   togglePause = () => {
-    if (this.snapshot.stage === 'handoff') return;
+    if (this.snapshot.stage === 'complete') return;
     const paused = !this.snapshot.paused;
     this.update({ paused });
     // Pause lets the current animation finish, then holds its resolved state.

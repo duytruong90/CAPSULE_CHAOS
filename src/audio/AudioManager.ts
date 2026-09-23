@@ -6,6 +6,8 @@ export type AudioCue =
   | 'result.elimination'
   | 'result.safe'
   | 'result.revival'
+  | 'final.heartbeat'
+  | 'final.glitch'
   | `card.${CardRarity}.charge`
   | `card.${CardRarity}.impact`;
 export interface AudioCueEvent {

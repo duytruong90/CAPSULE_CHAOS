@@ -2,7 +2,7 @@ import type { GameConfig } from './gameConfig';
 import type { PlayerEntry } from './setupTypes';
 import type { CardRarity } from '../cards/cardTypes';
 
-export const ENGINE_RULES_VERSION = 'capsule-chaos-engine-v2-purge' as const;
+export const ENGINE_RULES_VERSION = 'capsule-chaos-engine-v3-full-show' as const;
 
 export type PlayerState = 'active' | 'safe' | 'eliminated' | 'revived' | 'finalist' | 'winner';
 
@@ -17,6 +17,8 @@ export type PlayerHistoryEventType =
   | 'shield-consumed'
   | 'second-life-consumed'
   | 'revived'
+  | 'protected'
+  | 'phase-locked'
   | 'finalist'
   | 'winner';
 
@@ -48,10 +50,29 @@ export interface PhaseTargets {
 
 export type DrawRule = 'eliminate' | 'safe';
 export type ProtectionKind = 'shield' | 'second-life';
+export type FinalFateOutcome =
+  'normal' | 'reverse' | 'duel' | 'system-override' | 'revival-challenge' | 'fate-swap';
+export type FakeoutType =
+  'none' | 'false-celebration' | 'recalculation' | 'capsule-refusal' | 'double-reveal';
+
+export interface PlayerStatusSnapshot {
+  id: string;
+  state: PlayerState;
+  shieldCharges: number;
+  secondLifeCharges: number;
+  lockedUntilPhase?: GamePhase;
+  revivalCount: number;
+}
 
 export interface EngineEventPayloadByType {
   'phase-started': { activeCount: number; targetCount: number };
-  'player-drawn': { drawRule: DrawRule; activeCount: number; marked: boolean };
+  'player-drawn': {
+    drawRule: DrawRule;
+    activeCount: number;
+    marked: boolean;
+    nearMiss: boolean;
+    firstSafeDraw: boolean;
+  };
   'card-resolved': {
     cardId: string;
     name: string;
@@ -63,7 +84,22 @@ export interface EngineEventPayloadByType {
   'player-eliminated': { activeCount: number; eliminationCount: number };
   'player-safe': { activeCount: number };
   'protection-consumed': { protection: ProtectionKind; remainingCharges: number };
+  'protection-granted': { protection: ProtectionKind; charges: number; sourcePlayerId?: string };
+  'player-phase-locked': { untilPhase: GamePhase };
   'player-revived': { activeCount: number; revivalCount: number };
+  'duel-resolved': { winnerId: string; loserId: string };
+  'state-restored': { cardId: string; activeCount: number };
+  'final-fate-resolved': {
+    outcome: FinalFateOutcome;
+    advancingPlayerIds: readonly string[];
+    eliminatedPlayerIds: readonly string[];
+  };
+  'final-chamber-ready': {
+    winnerId: string;
+    loserId: string;
+    fakeoutType: FakeoutType;
+    apparentWinnerId: string;
+  };
   'phase-completed': { activeCount: number; targetCount: number };
   'winner-declared': { activeCount: 1 };
 }
@@ -77,6 +113,7 @@ export type EngineEventFor<T extends EngineEventType> = Readonly<{
   type: T;
   participants: readonly string[];
   payload: Readonly<EngineEventPayloadByType[T]>;
+  snapshot: readonly PlayerStatusSnapshot[];
 }>;
 
 export type EngineEvent = {

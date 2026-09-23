@@ -1,6 +1,7 @@
 import { type CSSProperties, useEffect, useSyncExternalStore } from 'react';
 import type { LockedGameSession } from '../game/state/gameSession';
 import { GachaponMachine } from '../components/GachaponMachine/GachaponMachine';
+import { SurvivorBoard } from '../components/SurvivorBoard/SurvivorBoard';
 import { EventRenderer } from './EventRenderer';
 import type { PlaybackController } from './playbackController';
 import styles from './GameShow.module.css';
@@ -19,17 +20,29 @@ export function GameShow({
   const event = playback.event;
   const durationMs = playback.duration;
   const isPlaying = state.stage === 'intro' || state.stage === 'event';
+  const phaseLabels = {
+    'phase-1': 'PHASE I — THE PURGE',
+    'phase-2': 'PHASE II — CHAOS AWAKENS',
+    'phase-3': 'PHASE III — SURVIVAL',
+    'phase-4': 'PHASE IV — FINAL FIVE',
+    'phase-5': 'PHASE V — FINAL FATE',
+    final: 'FINAL — LAST CAPSULE',
+  } as const;
   return (
-    <section className={styles.show} aria-label="Live giveaway">
+    <section
+      className={styles.show}
+      aria-label="Live giveaway"
+      data-phase={event?.phase ?? 'intro'}
+    >
       <div className={styles.hud}>
         <div>
           <span className={styles.title}>{title}</span>
           <h2>
             {state.stage === 'intro'
               ? 'OPENING CEREMONY'
-              : state.stage === 'handoff'
-                ? 'PHASE II — UP NEXT'
-                : 'PHASE I — THE PURGE'}
+              : event
+                ? phaseLabels[event.phase]
+                : 'CAPSULE CHAOS'}
           </h2>
         </div>
         <div className={styles.counter} aria-live="polite">
@@ -43,6 +56,15 @@ export function GameShow({
           { '--duration': `${durationMs}ms`, '--elapsed': `${state.elapsedMs}ms` } as CSSProperties
         }
       >
+        {event &&
+          session.lock.payload.config.showFullSurvivorBoard &&
+          (event.phase === 'phase-2' || event.phase === 'phase-3') && (
+            <SurvivorBoard
+              players={event.snapshot}
+              entries={session.lock.payload.entries}
+              currentPlayerIds={event.participants}
+            />
+          )}
         <div className={styles.machine}>
           <GachaponMachine
             key={event?.id ?? 'intro'}
@@ -56,13 +78,6 @@ export function GameShow({
               <h1>GAME LOCKED</h1>
               <strong>{session.publicLock.entryCount} PLAYERS · 1 WINNER</strong>
               <p>The Purge begins automatically.</p>
-            </div>
-          ) : state.stage === 'handoff' ? (
-            <div className={styles.intro}>
-              <p>UP NEXT</p>
-              <h1>CHAOS AWAKENS</h1>
-              <p>Phase II presentation arrives in Build Step 10.</p>
-              <strong>{state.remaining} survivors are ready.</strong>
             </div>
           ) : (
             event && (
@@ -89,7 +104,7 @@ export function GameShow({
           )}
           <button
             className="button buttonSecondary"
-            disabled={state.stage === 'handoff'}
+            disabled={state.stage === 'complete'}
             onClick={playback.togglePause}
           >
             {state.paused ? 'Resume' : 'Pause'}

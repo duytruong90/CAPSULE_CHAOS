@@ -8,6 +8,9 @@ export type PlayerAction =
   | { type: 'mark-finalist' }
   | { type: 'declare-winner' }
   | { type: 'revive'; maxRevivals: number }
+  | { type: 'lock-until-phase'; phase: NonNullable<Player['lockedUntilPhase']> }
+  | { type: 'clear-phase-lock' }
+  | { type: 'clear-protections' }
   | { type: 'grant-protection'; protection: ProtectionKind; charges?: number };
 
 export interface PlayerTransition {
@@ -21,6 +24,9 @@ export interface PlayerTransition {
     | 'finalist'
     | 'winner'
     | 'revived'
+    | 'phase-locked'
+    | 'phase-unlocked'
+    | 'protections-cleared'
     | 'protection-granted';
 }
 
@@ -96,8 +102,29 @@ export function reducePlayer(player: Player, action: PlayerAction): PlayerTransi
         throw new Error(`Player ${player.id} has reached the revival limit.`);
       }
       return {
-        player: { ...player, state: 'revived', revivalCount: player.revivalCount + 1 },
+        player: {
+          ...player,
+          state: 'revived',
+          shieldCharges: 0,
+          secondLifeCharges: 0,
+          revivalCount: player.revivalCount + 1,
+        },
         outcome: 'revived',
+      };
+    case 'lock-until-phase':
+      return {
+        player: { ...player, lockedUntilPhase: action.phase },
+        outcome: 'phase-locked',
+      };
+    case 'clear-phase-lock': {
+      const unlocked = { ...player };
+      delete unlocked.lockedUntilPhase;
+      return { player: unlocked, outcome: 'phase-unlocked' };
+    }
+    case 'clear-protections':
+      return {
+        player: { ...player, shieldCharges: 0, secondLifeCharges: 0 },
+        outcome: 'protections-cleared',
       };
     case 'grant-protection': {
       if (player.state === 'eliminated' || player.state === 'winner') {

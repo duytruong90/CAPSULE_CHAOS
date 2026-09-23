@@ -38,11 +38,35 @@
   letter-spacing: 0.12em;
 }
 .arena {
+  position: relative;
   display: grid;
   grid-template-columns: 560px minmax(0, 1fr);
   align-items: center;
   gap: 50px;
   height: 700px;
+}
+.show[data-phase='phase-3'] .arena {
+  background: radial-gradient(circle at 38% 48%, #3f244e 0, #0a0711 58%);
+  box-shadow: inset 0 0 120px #000;
+}
+.show[data-phase='phase-2'] .presentation,
+.show[data-phase='phase-3'] .presentation {
+  box-sizing: border-box;
+  padding-top: 220px;
+}
+.show[data-phase='phase-3'] .machine {
+  transform: scale(1.08);
+}
+.show[data-phase='phase-4'] .arena,
+.show[data-phase='phase-5'] .arena,
+.show[data-phase='final'] .arena {
+  grid-template-columns: 1fr;
+  background: radial-gradient(circle, #251830 0, #07050b 72%);
+}
+.show[data-phase='phase-4'] .machine,
+.show[data-phase='phase-5'] .machine,
+.show[data-phase='final'] .machine {
+  display: none;
 }
 .machine {
   display: grid;

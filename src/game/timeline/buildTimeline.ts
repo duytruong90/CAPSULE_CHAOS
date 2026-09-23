@@ -18,9 +18,13 @@ export const DEFAULT_TIMELINE_DURATIONS: TimelineDurationProfile = Object.freeze
   safe: 1100,
   'card-reveal': 1800,
   protection: 1200,
+  'protection-granted': 900,
+  'phase-lock': 1200,
+  'state-restored': 1300,
   revival: 1800,
   duel: 2200,
   'phase-transition': 1500,
+  'final-chamber': 3600,
   'fake-winner': 2200,
   'final-fate': 2200,
   winner: 6000,
@@ -71,6 +75,7 @@ export function buildTimeline(
       payload: Object.freeze({ ...payload }),
       presentationKey,
       minimumDurationMs: durations[type],
+      snapshot: source.snapshot,
     }) as TimelineEventFor<Type>;
     events.push(event as TimelineEvent);
   };
@@ -114,6 +119,8 @@ export function buildTimeline(
             sourceEngineEventId: event.id,
             drawRule: event.payload.drawRule,
             marked: event.payload.marked,
+            nearMiss: event.payload.nearMiss,
+            firstSafeDraw: event.payload.firstSafeDraw,
           },
           'capsule.spin',
         );
@@ -125,6 +132,8 @@ export function buildTimeline(
             sourceEngineEventId: event.id,
             drawRule: event.payload.drawRule,
             marked: event.payload.marked,
+            nearMiss: event.payload.nearMiss,
+            firstSafeDraw: event.payload.firstSafeDraw,
           },
           'capsule.player-reveal',
         );
@@ -173,6 +182,33 @@ export function buildTimeline(
           `protection.${event.payload.protection}`,
         );
         break;
+      case 'protection-granted':
+        append(
+          event,
+          'protection-granted',
+          event.participants,
+          { sourceEngineEventId: event.id, ...event.payload },
+          `protection.${event.payload.protection}.granted`,
+        );
+        break;
+      case 'player-phase-locked':
+        append(
+          event,
+          'phase-lock',
+          event.participants,
+          { sourceEngineEventId: event.id, untilPhase: event.payload.untilPhase },
+          'result.final-pass',
+        );
+        break;
+      case 'state-restored':
+        append(
+          event,
+          'state-restored',
+          event.participants,
+          { sourceEngineEventId: event.id, ...event.payload },
+          'result.nullify',
+        );
+        break;
       case 'player-revived':
         append(
           event,
@@ -185,6 +221,52 @@ export function buildTimeline(
           },
           'result.revival',
         );
+        break;
+      case 'duel-resolved':
+        append(
+          event,
+          'duel',
+          event.participants,
+          { sourceEngineEventId: event.id, ...event.payload },
+          'result.duel',
+        );
+        break;
+      case 'final-fate-resolved':
+        append(
+          event,
+          'final-fate',
+          event.participants,
+          { sourceEngineEventId: event.id, ...event.payload },
+          `final-fate.${event.payload.outcome}`,
+        );
+        break;
+      case 'final-chamber-ready':
+        append(
+          event,
+          'final-chamber',
+          event.participants,
+          {
+            sourceEngineEventId: event.id,
+            winnerId: event.payload.winnerId,
+            loserId: event.payload.loserId,
+            fakeoutType: event.payload.fakeoutType,
+          },
+          'final.chamber',
+        );
+        if (event.payload.fakeoutType !== 'none') {
+          append(
+            event,
+            'fake-winner',
+            event.participants,
+            {
+              sourceEngineEventId: event.id,
+              apparentWinnerId: event.payload.apparentWinnerId,
+              actualWinnerId: event.payload.winnerId,
+              variant: event.payload.fakeoutType,
+            },
+            `fakeout.${event.payload.fakeoutType}`,
+          );
+        }
         break;
       case 'winner-declared':
         append(

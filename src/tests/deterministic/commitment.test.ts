@@ -23,7 +23,7 @@ describe('canonical game lock commitment', () => {
 
     expect(commitment.fullHash).toBe(
       // v2 commits to the engine rules version; independently checked with node:crypto.
-      '398864d59d4c7e4da4cbe18ba6f30343f42d5e7c1da5b382733efa3adf8d88cf',
+      'b6c6583c4fc3bd26952e673026f637c8b360ad52daa8f3b67b3aa5545a6a484d',
     );
     expect(commitment.displayHash).toMatch(/^[0-9A-F]{4}(?:-[0-9A-F]{4}){3}$/u);
   });

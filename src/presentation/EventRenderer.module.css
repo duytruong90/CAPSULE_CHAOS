@@ -55,6 +55,85 @@
 .rescue {
   animation-name: rise;
 }
+.nearMiss {
+  position: absolute;
+  left: 5%;
+  top: 35%;
+  opacity: 0;
+  transform: scale(0.5);
+  animation: nearMiss var(--duration) both;
+}
+.duel,
+.finalists {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 28px;
+  width: 100%;
+}
+.duel > strong {
+  color: #ffb45d;
+  font-size: 58px;
+}
+.finalChamber,
+.fakeout {
+  display: grid;
+  place-items: center;
+  gap: 24px;
+  width: 100%;
+  text-align: center;
+}
+.finalChamber > :global(*) {
+  animation: rise var(--duration) both;
+}
+.countdown {
+  color: #ffd990;
+  font-size: 56px;
+  font-weight: 950;
+  letter-spacing: 0.16em;
+  text-shadow: 0 0 30px #ffa23a88;
+}
+.fakeout {
+  min-height: 540px;
+  border: 2px solid #ff658b66;
+  background: repeating-linear-gradient(0deg, #140c1cf2 0 4px, #28132df2 5px 6px);
+  animation: glitch var(--duration) steps(2) both;
+}
+.fakeout h1 {
+  margin: 0;
+  font-size: 76px;
+}
+.fakeout strong {
+  color: #ff8ca9;
+  font-size: 30px;
+  letter-spacing: 0.08em;
+}
+.fakeout p {
+  color: #ccb9d8;
+  font-size: 20px;
+}
+.fakeout[data-variant='false-celebration'] {
+  border-color: #ffd36c99;
+  background: radial-gradient(circle, #6c4c1544, #140c1cf2 60%);
+}
+.fakeout[data-variant='recalculation'] {
+  border-color: #67e9ff99;
+  background: repeating-linear-gradient(0deg, #07171df2 0 4px, #123341f2 5px 6px);
+}
+.fakeout[data-variant='capsule-refusal'] {
+  border-color: #ff536f99;
+  background: radial-gradient(circle, #6a0d2444, #10080df2 65%);
+}
+.fakeout[data-variant='double-reveal'] {
+  border-color: #b887ff99;
+  background: linear-gradient(90deg, #15102bf2, #3a173df2 50%, #15102bf2);
+}
+.doubleReveal {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  width: 92%;
+}
 .phase {
   max-width: 1000px;
   text-align: center;
@@ -150,6 +229,37 @@
   }
   53% {
     transform: translateX(6px);
+  }
+}
+@keyframes nearMiss {
+  20% {
+    opacity: 1;
+    transform: translate(100px, 40px) rotate(20deg) scale(0.65);
+  }
+  48% {
+    opacity: 1;
+    transform: translate(190px, 150px) rotate(90deg) scale(0.75);
+  }
+  70%,
+  100% {
+    opacity: 0;
+    transform: translate(40px, -120px) rotate(-100deg) scale(0.45);
+  }
+}
+@keyframes glitch {
+  0%,
+  45%,
+  100% {
+    transform: none;
+    filter: none;
+  }
+  48% {
+    transform: translateX(8px);
+    filter: hue-rotate(80deg);
+  }
+  52% {
+    transform: translateX(-7px);
+    filter: contrast(1.6);
   }
 }
 @media (prefers-reduced-motion: reduce) {

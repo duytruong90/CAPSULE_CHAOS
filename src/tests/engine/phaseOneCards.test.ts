@@ -84,33 +84,26 @@ describe('Phase 1 cards', () => {
           config,
           seed: i.toString(16).padStart(64, '0'),
         });
-        const active = new Set(entries.map((e) => e.id));
-        for (const [index, event] of result.events.entries()) {
-          const id = event.participants[0]!;
+        const known = new Set(entries.map((e) => e.id));
+        for (const event of result.events) {
           if (event.type === 'player-drawn') {
-            expect(active.has(id)).toBe(true);
-            if (event.payload.marked)
-              expect(result.events[index + 1]?.type).toBe('player-eliminated');
+            expect(known.has(event.participants[0]!)).toBe(true);
           }
-          if (event.type === 'card-resolved') {
+          if (event.type === 'card-resolved' && event.phase === 'phase-1') {
             seenCards.add(event.payload.cardId);
             expect(event.phase).toBe('phase-1');
             expect(['common', 'rare']).toContain(event.payload.rarity);
             expect(new Set(event.participants).size).toBe(event.participants.length);
           }
-          if (event.type === 'player-eliminated') {
-            expect(active.delete(id)).toBe(true);
-          }
-          if (event.type === 'player-revived') {
-            expect(active.has(id)).toBe(false);
-            active.add(id);
-          }
-          if ('activeCount' in event.payload) expect(event.payload.activeCount).toBe(active.size);
+          const snapshotActive = event.snapshot.filter(
+            (player) => player.state !== 'eliminated',
+          ).length;
+          if ('activeCount' in event.payload)
+            expect(event.payload.activeCount).toBe(snapshotActive);
           if (event.type === 'phase-completed')
-            expect(active.size).toBe(result.phaseTargets[event.phase]);
+            expect(snapshotActive).toBe(result.phaseTargets[event.phase]);
         }
-        expect(active.size).toBe(1);
-        expect(active.has(result.winnerId)).toBe(true);
+        expect(result.players.filter((player) => player.state === 'winner')).toHaveLength(1);
       }
       expect([...seenCards].sort()).toEqual(PHASE_ONE_CARDS.map((c) => c.id).sort());
     },

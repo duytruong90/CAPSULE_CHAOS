@@ -31,6 +31,12 @@ export function eventDuration(event: TimelineEvent, speed: AnimationSpeed, entry
 }
 
 export function reactionDuration(event: TimelineEvent, speed: AnimationSpeed) {
-  const base = ['elimination', 'safe', 'protection', 'revival'].includes(event.type) ? 2200 : 250;
+  const base = ['elimination', 'safe', 'protection', 'revival', 'duel', 'final-fate'].includes(
+    event.type,
+  )
+    ? event.phase === 'phase-3'
+      ? 5000
+      : 2200
+    : 250;
   return Math.round(base * SPEED_MULTIPLIERS[speed]);
 }
